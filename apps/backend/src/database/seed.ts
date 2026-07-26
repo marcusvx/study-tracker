@@ -2,7 +2,6 @@ import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import dataSource from './data-source';
 import { SeedResult } from './seeds/seed-records';
-import { seedMessages } from './seeds/seed-messages';
 import { seedStudyItems } from './seeds/seed-study-items';
 
 type Seed = {
@@ -11,10 +10,6 @@ type Seed = {
 };
 
 const seeds: Seed[] = [
-  {
-    name: 'messages',
-    run: seedMessages,
-  },
   {
     name: 'study_items',
     run: seedStudyItems,

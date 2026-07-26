@@ -19,7 +19,7 @@ function sanitizeDbIdentifier(name: string): string {
 }
 
 async function ensureDatabase(): Promise<void> {
-  const dbName = process.env.DB_NAME ?? 'template_app';
+  const dbName = process.env.DB_NAME ?? 'study_tracker_app';
   const client = new Client({
     host: process.env.DB_HOST ?? 'localhost',
     port: getDbPort(),

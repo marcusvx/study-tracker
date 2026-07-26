@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSourceOptions } from 'typeorm';
-import { MessageEntity } from '../messages/entities/message.entity';
 import { StudyItemEntity } from '../study-items/study-item.entity';
 import { ProgressLogEntity } from '../progress-logs/progress-log.entity';
 
@@ -13,8 +12,8 @@ const baseOptions: DataSourceOptions = {
   port: Number.isNaN(dbPort) ? 5432 : dbPort,
   username: process.env.DB_USER ?? 'postgres',
   password: process.env.DB_PASSWORD ?? 'postgres',
-  database: process.env.DB_NAME ?? 'template_app',
-  entities: [MessageEntity, StudyItemEntity, ProgressLogEntity],
+  database: process.env.DB_NAME ?? 'study_tracker_app',
+  entities: [StudyItemEntity, ProgressLogEntity],
   synchronize: false,
 };
 

@@ -1,5 +1,5 @@
 {
-  "name": "@template/frontend",
+  "name": "@study-tracker/frontend",
   "version": "1.0.0",
   "private": true,
   "type": "module",

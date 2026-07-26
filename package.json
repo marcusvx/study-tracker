@@ -1,8 +1,8 @@
 {
-  "name": "template-app",
+  "name": "study-tracker",
   "version": "1.0.0",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "workspaces": [
     "apps/*"
   ],
@@ -29,10 +29,10 @@
   },
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:backend": "npm run start:dev --workspace @template/backend",
-    "dev:frontend": "npm run dev --workspace @template/frontend",
+    "dev:backend": "npm run start:dev --workspace @study-tracker/backend",
+    "dev:frontend": "npm run dev --workspace @study-tracker/frontend",
     "build": "npm run build --workspaces --if-present",
-    "test": "npm run test --workspace @template/backend",
+    "test": "npm run test --workspace @study-tracker/backend",
     "lint": "npm run lint --workspaces --if-present",
     "docker:up": "docker compose up --build -d",
     "docker:down": "docker compose down",

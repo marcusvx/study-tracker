@@ -61,7 +61,7 @@ study-tracker/
 
 4. **Initialize Database, Run Migrations & Seed Data:**
    ```bash
-   npm run --workspace @template/backend db:setup
+   npm run --workspace @study-tracker/backend db:setup
    ```
 
 5. **Start Development Servers (Backend + Frontend):**
@@ -94,19 +94,19 @@ Default Access URLs:
 
 ```bash
 # Run database setup (Create database if missing, run migrations, run seed data)
-npm run --workspace @template/backend db:setup
+npm run --workspace @study-tracker/backend db:setup
 
 # Ensure database exists
-npm run --workspace @template/backend db:ensure
+npm run --workspace @study-tracker/backend db:ensure
 
 # Run pending migrations
-npm run --workspace @template/backend migration:run
+npm run --workspace @study-tracker/backend migration:run
 
 # Revert last migration
-npm run --workspace @template/backend migration:revert
+npm run --workspace @study-tracker/backend migration:revert
 
 # Run seed scripts
-npm run --workspace @template/backend db:seed
+npm run --workspace @study-tracker/backend db:seed
 ```
 
 ---

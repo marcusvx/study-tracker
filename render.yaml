@@ -2,8 +2,8 @@ services:
   - type: web
     name: study-tracker-backend
     env: node
-    buildCommand: npm install && npm run build --workspace @template/backend
-    startCommand: npm run start:prod --workspace @template/backend
+    buildCommand: npm install && npm run build --workspace @study-tracker/backend
+    startCommand: npm run start:prod --workspace @study-tracker/backend
     envVars:
       - key: PORT
         value: 3000

@@ -11,7 +11,7 @@ RUN npm ci
 
 COPY . .
 
-RUN npm run build --workspace @template/backend
+RUN npm run build --workspace @study-tracker/backend
 
 FROM node:20-alpine AS runner
 
