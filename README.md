@@ -1,94 +1,125 @@
-# template-fullstack-app
+# Ritmo de Estudos — Study Tracker
 
-A small full-stack starter for building MVPs quickly with a NestJS API, React frontend, and PostgreSQL 18.
+A mobile-first full-stack application (PWA/iOS ready) designed to track multiple study goals in parallel — technical books, certifications, online courses, and work documentation — complete with time goals, progress tracking, study pacing, and target completion ETA forecasting.
 
-## Stack
+---
 
-- **Backend:** NestJS, TypeORM, PostgreSQL, class-validator
-- **Frontend:** React, Vite, Tailwind CSS
-- **Tooling:** TypeScript, Jest, ESLint, npm workspaces, Docker Compose
+## Tech Stack
 
-## Project Layout
+- **Backend:** NestJS 11, TypeORM, PostgreSQL 18, `class-validator`
+- **Frontend:** React 19, Vite, TypeScript, Vanilla CSS Design System
+- **Database:** PostgreSQL 18 with UUID v7 primary keys for time-orderable IDs
+- **Tooling:** TypeScript, npm workspaces, Docker Compose, ESLint, Prettier
 
-- `apps/backend` - NestJS API with health checks, message endpoints, TypeORM migrations, and seed data
-- `apps/frontend` - React + Vite app wired to the backend through `VITE_API_BASE_URL`
-- `docker-compose.yml` - PostgreSQL 18 and backend services for local development
+---
+
+## Project Structure
+
+```
+study-tracker/
+├── apps/
+│   ├── backend/             # NestJS REST API application
+│   │   ├── src/
+│   │   │   ├── study-items/  # Study Items module, entities, controllers & services
+│   │   │   ├── progress-logs/# Progress log tracking module & entities
+│   │   │   ├── database/     # TypeORM config, migrations, and seed scripts
+│   │   │   └── health/       # Health check controller
+│   └── frontend/            # React + Vite web application
+│       ├── src/
+│       │   ├── components/   # UI components (StudyCard, ProgressSheet, Charts)
+│       │   ├── views/        # Main views (Dashboard, Detail, Create/Edit, Settings)
+│       │   ├── services/     # API client for backend communication
+│       │   └── utils/        # ETA calculation logic & formatters
+├── docs/                    # Specification & UI design guide
+└── docker-compose.yml       # Docker environment for PostgreSQL & backend
+```
+
+---
 
 ## Quickstart
 
+### Prerequisites
+- Node.js 20+
+- PostgreSQL running locally (via [Postgres.app](https://postgresapp.com/) or Docker)
+
+### Setup & Launch
+
+1. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Configure Environment Variables:**
+   ```bash
+   cp apps/backend/.env.example apps/backend/.env
+   ```
+
+3. **Start PostgreSQL Container (Optional if using Docker):**
+   ```bash
+   docker compose up -d postgres
+   ```
+
+4. **Initialize Database, Run Migrations & Seed Data:**
+   ```bash
+   npm run --workspace @template/backend db:setup
+   ```
+
+5. **Start Development Servers (Backend + Frontend):**
+   ```bash
+   npm run dev
+   ```
+
+Default Access URLs:
+- **Frontend:** [http://localhost:5173](http://localhost:5173)
+- **Backend API:** [http://localhost:3000](http://localhost:3000)
+- **API Health Check:** [http://localhost:3000/health/ready](http://localhost:3000/health/ready)
+
+---
+
+## REST API Reference
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/study-items` | Fetch all study items with historical progress logs |
+| `GET` | `/study-items/:id` | Fetch single study item details with logs |
+| `POST` | `/study-items` | Create a new study item |
+| `PUT` | `/study-items/:id` | Update study item details |
+| `DELETE` | `/study-items/:id` | Archive / delete a study item |
+| `POST` | `/study-items/:id/logs` | Record a progress log (updates current progress & status) |
+| `PATCH` | `/study-items/:id/toggle-pause` | Toggle item status between `active` and `paused` |
+
+---
+
+## Database Management Commands
+
 ```bash
-npm install
-cp apps/backend/.env.example apps/backend/.env
-cp apps/frontend/.env.example apps/frontend/.env
-docker compose up -d postgres
-npm run --workspace @template/backend db:setup
-npm run dev
-```
-
-Default URLs:
-
-- Frontend: `http://localhost:5173`
-- Backend API: `http://localhost:3000`
-- Health check: `http://localhost:3000/health/ready`
-
-## Database
-
-This template targets PostgreSQL 18 and uses UUID v7 primary keys for time-orderable IDs.
-
-```bash
-# run migrations and seed data
+# Run database setup (Create database if missing, run migrations, run seed data)
 npm run --workspace @template/backend db:setup
 
-# create database if missing (safe to run multiple times)
+# Ensure database exists
 npm run --workspace @template/backend db:ensure
 
-# run only migrations
+# Run pending migrations
 npm run --workspace @template/backend migration:run
 
-# seed default data
-npm run --workspace @template/backend db:seed
-
-# rollback last migration
+# Revert last migration
 npm run --workspace @template/backend migration:revert
+
+# Run seed scripts
+npm run --workspace @template/backend db:seed
 ```
 
-Default database settings are in `apps/backend/.env.example`.
+---
 
-Seeds are registered in `apps/backend/src/database/seed.ts`. For new entities, add a seed file under `apps/backend/src/database/seeds` and use `seedRecords(...)` to define batch records with an idempotency `where` clause and insert `data`.
+## Development Scripts
 
-## Development Commands
-
-```bash
-# backend + frontend
-npm run dev
-
-# backend only
-npm run dev:backend
-
-# frontend only
-npm run dev:frontend
-
-# build all workspaces
-npm run build
-
-# run backend tests
-npm run test
-
-# run lint
-npm run lint
-```
-
-## Docker
-
-```bash
-# start PostgreSQL and backend
-npm run docker:up
-
-# follow backend logs
-npm run docker:logs
-
-# stop services
-npm run docker:down
-```
-
-Docker exposes PostgreSQL on `localhost:5432` using database `template_app`, user `postgres`, and password `postgres`.
+| Command | Action |
+| :--- | :--- |
+| `npm run dev` | Start both NestJS backend and Vite frontend concurrently |
+| `npm run dev:backend` | Start backend dev server with watch mode |
+| `npm run dev:frontend` | Start frontend Vite dev server |
+| `npm run build` | Build all workspaces (frontend & backend) for production |
+| `npm run lint` | Run ESLint across all workspaces |
+| `npm run test` | Run backend Jest test suite |
+| `npm run docker:up` | Build and launch full environment using Docker Compose |
+| `npm run docker:down` | Stop Docker Compose services |
