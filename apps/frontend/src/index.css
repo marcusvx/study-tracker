@@ -1,1 +1,47 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+:root {
+  --bg-base: #14171A;
+  --surface-card: #1E2226;
+  --border: #2B3036;
+  --text-primary: #EDEEEC;
+  --text-secondary: #A0A7B0;
+  --text-muted: #8B929A;
+  --accent: #E8A33D;
+  --accent-light: rgba(232, 163, 61, 0.12);
+  --alert: #C9694F;
+  --alert-light: rgba(201, 105, 79, 0.12);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input, button, textarea, select {
+  font-family: inherit;
+}
+
+/* Scrollbar customization for dark panel theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: #2D3339;
+  border-radius: 99px;
+}

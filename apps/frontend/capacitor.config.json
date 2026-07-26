@@ -1,0 +1,16 @@
+{
+  "appId": "com.ritmo.studytracker",
+  "appName": "Compasso",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon_config_sample",
+      "iconColor": "#E8A33D",
+      "sound": "bevel.wav"
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  }
+}
