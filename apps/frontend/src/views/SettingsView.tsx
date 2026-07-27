@@ -157,10 +157,10 @@ export function SettingsView({ items, onBack }: SettingsViewProps) {
               letterSpacing: '0.05em',
             }}
           >
-            SOBRE O COMPASSO
+            SOBRE O STUDY TRACKER
           </div>
           <div style={{ fontSize: 14, color: 'var(--text-primary, #EDEEEC)' }}>
-            Compasso — v1.0.0
+            Study Tracker — v1.0.0
           </div>
           <div
             style={{

@@ -60,7 +60,7 @@ export function LoginView() {
             marginBottom: 4,
           }}
         >
-          Compasso
+          Study Tracker
         </div>
         <div
           style={{

@@ -72,7 +72,7 @@ export function DashboardView({
                 color: 'var(--text-primary, #EDEEEC)',
               }}
             >
-              Compasso
+              Study Tracker
             </div>
             <div
               style={{

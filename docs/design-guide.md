@@ -1,4 +1,4 @@
-# Guia de Design — Compasso
+# Guia de Design — Study Tracker
 
 ## Conceito
 

@@ -22,7 +22,7 @@ export function CircularProgressDial({
   const clampedPct = Math.min(100, Math.max(0, percentage));
   const strokeDashoffset = circumference - (clampedPct / 100) * circumference;
 
-  // Dial colors based on Compasso Design Guide
+  // Dial colors based on Study Tracker Design Guide
   const accentColor = onTrack
     ? 'var(--accent, #E8A33D)'
     : 'var(--alert, #C9694F)';
