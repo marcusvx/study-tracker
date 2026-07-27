@@ -1,9 +1,10 @@
 services:
   - type: web
     name: study-tracker-backend
-    env: node
-    buildCommand: npm install && npm run build --workspace @study-tracker/backend
-    startCommand: npm run start:prod --workspace @study-tracker/backend
+    runtime: docker
+    rootDir: apps/backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     envVars:
       - key: PORT
         value: 3000
