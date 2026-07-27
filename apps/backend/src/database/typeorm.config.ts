@@ -4,15 +4,15 @@ import { DataSourceOptions } from 'typeorm';
 import { StudyItemEntity } from '../study-items/study-item.entity';
 import { ProgressLogEntity } from '../progress-logs/progress-log.entity';
 
-const dbPort = Number.parseInt(process.env.DB_PORT ?? '5432', 10);
-
+// Local dev points this at docker-compose Postgres; production points it at Supabase.
+// Only the latter needs SSL, gated on NODE_ENV rather than on the URL itself.
 const baseOptions: DataSourceOptions = {
   type: 'postgres',
-  host: process.env.DB_HOST ?? 'localhost',
-  port: Number.isNaN(dbPort) ? 5432 : dbPort,
-  username: process.env.DB_USER ?? 'postgres',
-  password: process.env.DB_PASSWORD ?? 'postgres',
-  database: process.env.DB_NAME ?? 'study_tracker_app',
+  url: process.env.DATABASE_URL,
+  ssl:
+    process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: false }
+      : false,
   entities: [StudyItemEntity, ProgressLogEntity],
   synchronize: false,
 };

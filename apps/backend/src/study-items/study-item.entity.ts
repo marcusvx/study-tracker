@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 import { ProgressLogEntity } from '../progress-logs/progress-log.entity';
 
 export type Category = 'book' | 'cert' | 'course' | 'work';
@@ -9,6 +16,9 @@ export type Status = 'active' | 'paused' | 'done';
 export class StudyItemEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
+
+  @Column({ type: 'uuid' })
+  userId!: string;
 
   @Column()
   title!: string;

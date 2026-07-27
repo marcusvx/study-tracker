@@ -1,17 +1,12 @@
 import 'dotenv/config';
 import { Client } from 'pg';
 
-function getDbPort(): number {
-  const parsed = Number.parseInt(process.env.DB_PORT ?? '5432', 10);
-  return Number.isNaN(parsed) ? 5432 : parsed;
-}
-
 function sanitizeDbIdentifier(name: string): string {
-  const isValid = /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name);
+  const isValid = /^[a-zA-Z_]\w*$/.test(name);
 
   if (!isValid) {
     throw new Error(
-      `Invalid DB_NAME "${name}". Use letters, numbers, and underscore.`,
+      `Invalid database name "${name}" in DATABASE_URL. Use letters, numbers, and underscore.`,
     );
   }
 
@@ -19,13 +14,21 @@ function sanitizeDbIdentifier(name: string): string {
 }
 
 async function ensureDatabase(): Promise<void> {
-  const dbName = process.env.DB_NAME ?? 'study_tracker_app';
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL is not set');
+  }
+
+  const dbName = new URL(databaseUrl).pathname.replace(/^\//, '');
+  const maintenanceUrl = new URL(databaseUrl);
+  maintenanceUrl.pathname = '/postgres';
+
   const client = new Client({
-    host: process.env.DB_HOST ?? 'localhost',
-    port: getDbPort(),
-    user: process.env.DB_USER ?? 'postgres',
-    password: process.env.DB_PASSWORD ?? 'postgres',
-    database: 'postgres',
+    connectionString: maintenanceUrl.toString(),
+    ssl:
+      process.env.NODE_ENV === 'production'
+        ? { rejectUnauthorized: false }
+        : undefined,
   });
 
   await client.connect();

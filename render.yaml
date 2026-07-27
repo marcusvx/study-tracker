@@ -9,12 +9,12 @@ services:
         value: 3000
       - key: NODE_ENV
         value: production
+      # Supabase Postgres connection string. Set manually in the Render
+      # dashboard (Project Settings > Database > Connection string).
       - key: DATABASE_URL
-        fromDatabase:
-          name: study-tracker-db
-          property: connectionString
-
-databases:
-  - name: study-tracker-db
-    databaseName: studytracker
-    user: studytracker_user
+        sync: false
+      # Supabase project URL, used to verify auth tokens via its JWKS
+      # endpoint. Set manually in the Render dashboard
+      # (Project Settings > API > Project URL).
+      - key: SUPABASE_URL
+        sync: false

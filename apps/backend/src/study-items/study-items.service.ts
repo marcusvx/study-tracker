@@ -16,8 +16,9 @@ export class StudyItemsService {
     private readonly progressLogRepo: Repository<ProgressLogEntity>,
   ) {}
 
-  async findAll(): Promise<StudyItemEntity[]> {
+  async findAll(userId: string): Promise<StudyItemEntity[]> {
     return this.studyItemRepo.find({
+      where: { userId },
       relations: { log: true },
       order: {
         createdAt: 'DESC',
@@ -26,9 +27,9 @@ export class StudyItemsService {
     });
   }
 
-  async findOne(id: string): Promise<StudyItemEntity> {
+  async findOne(id: string, userId: string): Promise<StudyItemEntity> {
     const item = await this.studyItemRepo.findOne({
-      where: { id },
+      where: { id, userId },
       relations: { log: true },
       order: { log: { createdAt: 'ASC' } },
     });
@@ -36,9 +37,13 @@ export class StudyItemsService {
     return item;
   }
 
-  async create(data: CreateStudyItemDto): Promise<StudyItemEntity> {
+  async create(
+    data: CreateStudyItemDto,
+    userId: string,
+  ): Promise<StudyItemEntity> {
     const item = this.studyItemRepo.create({
       ...data,
+      userId,
       currentProgress: data.currentProgress ?? 0,
       status: data.status ?? 'active',
       log: [],
@@ -46,22 +51,27 @@ export class StudyItemsService {
     return this.studyItemRepo.save(item);
   }
 
-  async update(id: string, data: UpdateStudyItemDto): Promise<StudyItemEntity> {
-    const item = await this.findOne(id);
+  async update(
+    id: string,
+    data: UpdateStudyItemDto,
+    userId: string,
+  ): Promise<StudyItemEntity> {
+    const item = await this.findOne(id, userId);
     Object.assign(item, data);
     return this.studyItemRepo.save(item);
   }
 
-  async remove(id: string): Promise<void> {
-    const item = await this.findOne(id);
+  async remove(id: string, userId: string): Promise<void> {
+    const item = await this.findOne(id, userId);
     await this.studyItemRepo.remove(item);
   }
 
   async addProgressLog(
     id: string,
     dto: CreateProgressLogDto,
+    userId: string,
   ): Promise<StudyItemEntity> {
-    const item = await this.findOne(id);
+    const item = await this.findOne(id, userId);
 
     const today = new Date().toISOString().slice(0, 10);
     const newLog = this.progressLogRepo.create({
@@ -84,11 +94,11 @@ export class StudyItemsService {
     }
 
     await this.studyItemRepo.save(item);
-    return this.findOne(id);
+    return this.findOne(id, userId);
   }
 
-  async togglePause(id: string): Promise<StudyItemEntity> {
-    const item = await this.findOne(id);
+  async togglePause(id: string, userId: string): Promise<StudyItemEntity> {
+    const item = await this.findOne(id, userId);
     item.status = item.status === 'paused' ? 'active' : 'paused';
     return this.studyItemRepo.save(item);
   }

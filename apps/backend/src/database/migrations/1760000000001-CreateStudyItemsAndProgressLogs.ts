@@ -1,4 +1,9 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
 export class CreateStudyItemsAndProgressLogs1760000000001 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -11,6 +16,11 @@ export class CreateStudyItemsAndProgressLogs1760000000001 implements MigrationIn
             type: 'uuid',
             isPrimary: true,
             default: 'uuidv7()',
+          },
+          {
+            name: 'userId',
+            type: 'uuid',
+            isNullable: false,
           },
           {
             name: 'title',
