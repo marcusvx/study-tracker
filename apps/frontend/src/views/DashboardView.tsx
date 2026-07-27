@@ -1,14 +1,14 @@
-import { useState } from 'react'
-import { FilterTab, StudyItem } from '../types/study'
-import { IconPlus, IconSettings } from '../components/icons/Index'
-import { StudyCard } from '../components/study/StudyCard'
+import { useState } from 'react';
+import { FilterTab, StudyItem } from '../types/study';
+import { IconPlus, IconSettings } from '../components/icons/Index';
+import { StudyCard } from '../components/study/StudyCard';
 
 interface DashboardViewProps {
-  items: StudyItem[]
-  onRegister: (id: string) => void
-  onSelect: (id: string) => void
-  onNew: () => void
-  onSettings: () => void
+  items: StudyItem[];
+  onRegister: (id: string) => void;
+  onSelect: (id: string) => void;
+  onNew: () => void;
+  onSettings: () => void;
 }
 
 export function DashboardView({
@@ -18,25 +18,31 @@ export function DashboardView({
   onNew,
   onSettings,
 }: DashboardViewProps) {
-  const [filter, setFilter] = useState<FilterTab>('all')
+  const [filter, setFilter] = useState<FilterTab>('all');
 
-  const filtered = items.filter(i => {
-    if (filter === 'all') return true
-    if (filter === 'active') return i.status === 'active'
-    if (filter === 'paused') return i.status === 'paused'
-    if (filter === 'done') return i.status === 'done'
-    return true
-  })
+  const filtered = items.filter((i) => {
+    if (filter === 'all') return true;
+    if (filter === 'active') return i.status === 'active';
+    if (filter === 'paused') return i.status === 'paused';
+    if (filter === 'done') return i.status === 'done';
+    return true;
+  });
 
   const tabs: { key: FilterTab; label: string }[] = [
     { key: 'all', label: 'Todos' },
     { key: 'active', label: 'Ativos' },
     { key: 'paused', label: 'Pausados' },
     { key: 'done', label: 'Concluídos' },
-  ]
+  ];
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-base, #14171A)', paddingBottom: 100 }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-base, #14171A)',
+        paddingBottom: 100,
+      }}
+    >
       {/* Top bar */}
       <div
         style={{
@@ -48,7 +54,14 @@ export function DashboardView({
           zIndex: 10,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 16,
+          }}
+        >
           <div>
             <div
               style={{
@@ -61,8 +74,15 @@ export function DashboardView({
             >
               Compasso
             </div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted, #8B929A)', marginTop: 2 }}>
-              {items.filter(i => i.status === 'active').length} frentes de estudo ativas
+            <div
+              style={{
+                fontSize: 12,
+                color: 'var(--text-muted, #8B929A)',
+                marginTop: 2,
+              }}
+            >
+              {items.filter((i) => i.status === 'active').length} frentes de
+              estudo ativas
             </div>
           </div>
           <button
@@ -82,7 +102,7 @@ export function DashboardView({
 
         {/* Filter tabs */}
         <div style={{ display: 'flex', gap: 4 }}>
-          {tabs.map(t => (
+          {tabs.map((t) => (
             <button
               key={t.key}
               onClick={() => setFilter(t.key)}
@@ -93,8 +113,14 @@ export function DashboardView({
                 border: 'none',
                 background: 'none',
                 cursor: 'pointer',
-                borderBottom: filter === t.key ? '2px solid var(--accent, #E8A33D)' : '2px solid transparent',
-                color: filter === t.key ? 'var(--accent, #E8A33D)' : 'var(--text-secondary, #8B929A)',
+                borderBottom:
+                  filter === t.key
+                    ? '2px solid var(--accent, #E8A33D)'
+                    : '2px solid transparent',
+                color:
+                  filter === t.key
+                    ? 'var(--accent, #E8A33D)'
+                    : 'var(--text-secondary, #8B929A)',
                 borderRadius: '4px 4px 0 0',
                 transition: 'color 0.15s',
               }}
@@ -106,13 +132,27 @@ export function DashboardView({
       </div>
 
       {/* Card list */}
-      <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div
+        style={{
+          padding: '20px 16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+        }}
+      >
         {filtered.length === 0 && (
-          <div style={{ textAlign: 'center', color: 'var(--text-muted, #8B929A)', padding: '40px 0', fontSize: 14 }}>
+          <div
+            style={{
+              textAlign: 'center',
+              color: 'var(--text-muted, #8B929A)',
+              padding: '40px 0',
+              fontSize: 14,
+            }}
+          >
             Nenhum item nesta lista.
           </div>
         )}
-        {filtered.map(item => (
+        {filtered.map((item) => (
           <StudyCard
             key={item.id}
             item={item}
@@ -143,11 +183,11 @@ export function DashboardView({
           transition: 'transform 0.15s',
           zIndex: 20,
         }}
-        onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.06)')}
-        onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+        onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.06)')}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
       >
         <IconPlus size={24} />
       </button>
     </div>
-  )
+  );
 }

@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react'
-import { StudyItem, View } from './types/study'
-import { DashboardView } from './views/DashboardView'
-import { DetailView } from './views/DetailView'
-import { CreateEditView } from './views/CreateEditView'
-import { SettingsView } from './views/SettingsView'
-import { ProgressSheet } from './components/study/ProgressSheet'
+import { useEffect, useState } from 'react';
+import type { Session } from '@supabase/supabase-js';
+import { StudyItem, View } from './types/study';
+import { DashboardView } from './views/DashboardView';
+import { DetailView } from './views/DetailView';
+import { CreateEditView } from './views/CreateEditView';
+import { SettingsView } from './views/SettingsView';
+import { LoginView } from './views/LoginView';
+import { ProgressSheet } from './components/study/ProgressSheet';
+import { supabase } from './lib/supabaseClient';
 import {
   fetchStudyItems,
   createStudyItem,
@@ -12,95 +15,131 @@ import {
   deleteStudyItem,
   addProgressLog,
   togglePauseStudyItem,
-} from './services/api'
+} from './services/api';
 
 export function App() {
-  const [items, setItems] = useState<StudyItem[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
+  const [session, setSession] = useState<Session | null | undefined>(undefined);
+  const [items, setItems] = useState<StudyItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [view, setView] = useState<View>('dashboard')
-  const [activeId, setActiveId] = useState<string | null>(null)
-  const [sheetItemId, setSheetItemId] = useState<string | null>(null)
-  const [editItem, setEditItem] = useState<StudyItem | undefined>(undefined)
+  const [view, setView] = useState<View>('dashboard');
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [sheetItemId, setSheetItemId] = useState<string | null>(null);
+  const [editItem, setEditItem] = useState<StudyItem | undefined>(undefined);
+
+  useEffect(() => {
+    void supabase.auth
+      .getSession()
+      .then(({ data }) => setSession(data.session));
+    const { data: subscription } = supabase.auth.onAuthStateChange(
+      (_event, newSession) => {
+        setSession(newSession);
+      },
+    );
+    return () => subscription.subscription.unsubscribe();
+  }, []);
 
   const loadData = async () => {
     try {
-      setLoading(true)
-      setError(null)
-      const data = await fetchStudyItems()
-      setItems(data)
-    } catch (err: any) {
-      console.error('Error fetching study items:', err)
-      setError(err?.message || 'Failed to connect to backend server')
+      setLoading(true);
+      setError(null);
+      const data = await fetchStudyItems();
+      setItems(data);
+    } catch (err) {
+      console.error('Error fetching study items:', err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Failed to connect to backend server',
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    loadData()
-  }, [])
+    if (session) void loadData();
+  }, [session]);
 
-  const activeItem = activeId ? items.find(i => i.id === activeId) : undefined
-  const sheetItem = sheetItemId ? items.find(i => i.id === sheetItemId) : undefined
+  const activeItem = activeId
+    ? items.find((i) => i.id === activeId)
+    : undefined;
+  const sheetItem = sheetItemId
+    ? items.find((i) => i.id === sheetItemId)
+    : undefined;
 
   const handleRegister = async (
     id: string,
     amount: number,
     minutes: number,
-    note: string
+    note: string,
   ) => {
     try {
-      const updatedItem = await addProgressLog(id, { amount, minutes, note })
-      setItems(prev => prev.map(i => (i.id === id ? updatedItem : i)))
+      const updatedItem = await addProgressLog(id, { amount, minutes, note });
+      setItems((prev) => prev.map((i) => (i.id === id ? updatedItem : i)));
     } catch (err: any) {
-      console.error('Error adding progress log:', err)
-      alert('Erro ao registrar progresso no servidor.')
+      console.error('Error adding progress log:', err);
+      alert('Erro ao registrar progresso no servidor.');
     } finally {
-      setSheetItemId(null)
+      setSheetItemId(null);
     }
-  }
+  };
 
   const handleSaveItem = async (
-    data: Omit<StudyItem, 'id' | 'log'> & { id?: string }
+    data: Omit<StudyItem, 'id' | 'log'> & { id?: string },
   ) => {
     try {
       if (data.id) {
-        const { id, ...updateFields } = data
-        const updatedItem = await updateStudyItem(id, updateFields)
-        setItems(prev => prev.map(i => (i.id === id ? updatedItem : i)))
+        const { id, ...updateFields } = data;
+        const updatedItem = await updateStudyItem(id, updateFields);
+        setItems((prev) => prev.map((i) => (i.id === id ? updatedItem : i)));
       } else {
-        const newItem = await createStudyItem(data)
-        setItems(prev => [newItem, ...prev])
+        const newItem = await createStudyItem(data);
+        setItems((prev) => [newItem, ...prev]);
       }
-      setView('dashboard')
-      setEditItem(undefined)
+      setView('dashboard');
+      setEditItem(undefined);
     } catch (err: any) {
-      console.error('Error saving study item:', err)
-      alert('Erro ao salvar item no servidor.')
+      console.error('Error saving study item:', err);
+      alert('Erro ao salvar item no servidor.');
     }
-  }
+  };
 
   const handlePause = async (id: string) => {
     try {
-      const updatedItem = await togglePauseStudyItem(id)
-      setItems(prev => prev.map(i => (i.id === id ? updatedItem : i)))
+      const updatedItem = await togglePauseStudyItem(id);
+      setItems((prev) => prev.map((i) => (i.id === id ? updatedItem : i)));
     } catch (err: any) {
-      console.error('Error toggling pause state:', err)
-      alert('Erro ao alterar status no servidor.')
+      console.error('Error toggling pause state:', err);
+      alert('Erro ao alterar status no servidor.');
     }
-  }
+  };
 
   const handleArchive = async (id: string) => {
     try {
-      await deleteStudyItem(id)
-      setItems(prev => prev.filter(i => i.id !== id))
-      setView('dashboard')
+      await deleteStudyItem(id);
+      setItems((prev) => prev.filter((i) => i.id !== id));
+      setView('dashboard');
     } catch (err: any) {
-      console.error('Error deleting study item:', err)
-      alert('Erro ao arquivar item no servidor.')
+      console.error('Error deleting study item:', err);
+      alert('Erro ao arquivar item no servidor.');
     }
+  };
+
+  if (session === undefined) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          background: 'var(--bg-base, #14171A)',
+        }}
+      />
+    );
+  }
+
+  if (!session) {
+    return <LoginView />;
   }
 
   return (
@@ -152,10 +191,12 @@ export function App() {
             color: '#F87171',
           }}
         >
-          <p style={{ fontWeight: 600, fontSize: 16 }}>Erro ao carregar dados</p>
+          <p style={{ fontWeight: 600, fontSize: 16 }}>
+            Erro ao carregar dados
+          </p>
           <p style={{ color: '#94A3B8', fontSize: 14 }}>{error}</p>
           <button
-            onClick={loadData}
+            onClick={() => void loadData()}
             style={{
               padding: '10px 20px',
               borderRadius: 8,
@@ -174,14 +215,14 @@ export function App() {
           {view === 'dashboard' && (
             <DashboardView
               items={items}
-              onRegister={id => setSheetItemId(id)}
-              onSelect={id => {
-                setActiveId(id)
-                setView('detail')
+              onRegister={(id) => setSheetItemId(id)}
+              onSelect={(id) => {
+                setActiveId(id);
+                setView('detail');
               }}
               onNew={() => {
-                setEditItem(undefined)
-                setView('create')
+                setEditItem(undefined);
+                setView('create');
               }}
               onSettings={() => setView('settings')}
             />
@@ -193,18 +234,18 @@ export function App() {
               onBack={() => setView('dashboard')}
               onRegister={() => setSheetItemId(activeItem.id)}
               onEdit={() => {
-                setEditItem(activeItem)
-                setView('create')
+                setEditItem(activeItem);
+                setView('create');
               }}
-              onPause={() => handlePause(activeItem.id)}
-              onArchive={() => handleArchive(activeItem.id)}
+              onPause={() => void handlePause(activeItem.id)}
+              onArchive={() => void handleArchive(activeItem.id)}
             />
           )}
 
           {view === 'create' && (
             <CreateEditView
               initial={editItem}
-              onSave={handleSaveItem}
+              onSave={(data) => void handleSaveItem(data)}
               onBack={() => setView(editItem ? 'detail' : 'dashboard')}
             />
           )}
@@ -217,7 +258,7 @@ export function App() {
             <ProgressSheet
               item={sheetItem}
               onSave={(amount, minutes, note) =>
-                handleRegister(sheetItem.id, amount, minutes, note)
+                void handleRegister(sheetItem.id, amount, minutes, note)
               }
               onClose={() => setSheetItemId(null)}
             />
@@ -225,7 +266,7 @@ export function App() {
         </>
       )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
