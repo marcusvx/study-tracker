@@ -19,3 +19,24 @@ services:
       # (Project Settings > API > Project URL).
       - key: SUPABASE_URL
         sync: false
+      # Deployed frontend origin, for CORS. Set manually in the Render
+      # dashboard once the study-tracker-frontend static site has its
+      # onrender.com URL.
+      - key: FRONTEND_ORIGIN
+        sync: false
+
+  - type: web
+    name: study-tracker-frontend
+    runtime: static
+    rootDir: apps/frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://study-tracker-2l89.onrender.com
+      # Supabase project URL and anon/public key. Set manually in the
+      # Render dashboard (Supabase Project Settings > API).
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
