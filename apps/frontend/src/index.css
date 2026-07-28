@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
-:root {
+:root,
+[data-theme='dark'] {
   --bg-base: #14171A;
   --surface-card: #1E2226;
   --border: #2B3036;
@@ -13,6 +14,19 @@
   --alert-light: rgba(201, 105, 79, 0.12);
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme='light'] {
+  --bg-base: #F4F5F6;
+  --surface-card: #FFFFFF;
+  --border: #DDE1E5;
+  --text-primary: #14171A;
+  --text-secondary: #52585F;
+  --text-muted: #6B7280;
+  --accent: #C2812B;
+  --accent-light: rgba(194, 129, 43, 0.12);
+  --alert: #B5563D;
+  --alert-light: rgba(181, 86, 61, 0.12);
 }
 
 * {

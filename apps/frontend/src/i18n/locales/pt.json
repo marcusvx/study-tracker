@@ -78,6 +78,8 @@
   },
   "settings": {
     "title": "Configurações",
+    "appearance": "APARÊNCIA",
+    "darkTheme": "Tema escuro",
     "activeReminders": "LEMBRETES ATIVOS",
     "noReminders": "Nenhum lembrete configurado.",
     "account": "CONTA",

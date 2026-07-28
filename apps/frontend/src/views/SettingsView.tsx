@@ -1,8 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StudyItem } from '../types/study';
-import { IconArrowLeft } from '../components/icons/Index';
+import { IconArrowLeft, IconMoon, IconSun } from '../components/icons/Index';
 import { supabase } from '../lib/supabaseClient';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface SettingsViewProps {
   items: StudyItem[];
@@ -11,6 +12,7 @@ interface SettingsViewProps {
 
 export function SettingsView({ items, onBack }: SettingsViewProps) {
   const { t } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
   const withReminders = items.filter(
     (i) => i.notificationsOn && i.reminderTime,
   );
@@ -65,6 +67,72 @@ export function SettingsView({ items, onBack }: SettingsViewProps) {
           gap: 16,
         }}
       >
+        {/* Appearance */}
+        <div style={cardStyle}>
+          <div
+            style={{
+              fontSize: 11,
+              color: 'var(--text-muted, #8B929A)',
+              fontWeight: 600,
+              marginBottom: 12,
+              letterSpacing: '0.05em',
+            }}
+          >
+            {t('settings.appearance')}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                fontSize: 14,
+                fontWeight: 500,
+                color: 'var(--text-primary, #EDEEEC)',
+              }}
+            >
+              {theme === 'dark' ? (
+                <IconMoon size={16} />
+              ) : (
+                <IconSun size={16} />
+              )}
+              {t('settings.darkTheme')}
+            </div>
+            <div
+              onClick={toggleTheme}
+              style={{
+                width: 44,
+                height: 24,
+                borderRadius: 99,
+                cursor: 'pointer',
+                position: 'relative',
+                transition: 'background 0.2s',
+                background:
+                  theme === 'dark' ? 'var(--accent, #E8A33D)' : '#2D3339',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 3,
+                  left: theme === 'dark' ? 23 : 3,
+                  width: 18,
+                  height: 18,
+                  borderRadius: '50%',
+                  background: '#EDEEEC',
+                  transition: 'left 0.2s',
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Notifications */}
         <div style={cardStyle}>
           <div
