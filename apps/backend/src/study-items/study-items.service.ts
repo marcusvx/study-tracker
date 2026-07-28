@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { AppLogger } from '../telemetry/app-logger';
 import { StudyItemEntity } from './study-item.entity';
 import { ProgressLogEntity } from '../progress-logs/progress-log.entity';
 import { CreateStudyItemDto } from './dto/create-study-item.dto';
@@ -9,6 +10,8 @@ import { CreateProgressLogDto } from '../progress-logs/dto/create-progress-log.d
 
 @Injectable()
 export class StudyItemsService {
+  private readonly logger = new AppLogger(StudyItemsService.name);
+
   constructor(
     @InjectRepository(StudyItemEntity)
     private readonly studyItemRepo: Repository<StudyItemEntity>,
@@ -41,6 +44,15 @@ export class StudyItemsService {
     data: CreateStudyItemDto,
     userId: string,
   ): Promise<StudyItemEntity> {
+    this.logger.info('Creating study item', {
+      'user.id': userId,
+      'study_item.category': data.category,
+      'study_item.unit': data.unit,
+      'study_item.total_scope': data.totalScope,
+      'study_item.current_progress': data.currentProgress,
+      'study_item.status': data.status,
+    });
+
     const item = this.studyItemRepo.create({
       ...data,
       userId,
@@ -48,7 +60,23 @@ export class StudyItemsService {
       status: data.status ?? 'active',
       log: [],
     });
-    return this.studyItemRepo.save(item);
+
+    try {
+      const saved = await this.studyItemRepo.save(item);
+      this.logger.info('Study item created', {
+        'user.id': userId,
+        'study_item.id': saved.id,
+      });
+      return saved;
+    } catch (err) {
+      this.logger.error('Failed to create study item', {
+        'user.id': userId,
+        'error.message': err instanceof Error ? err.message : String(err),
+        'error.name': err instanceof Error ? err.name : undefined,
+        'error.stack': err instanceof Error ? err.stack : undefined,
+      });
+      throw err;
+    }
   }
 
   async update(
