@@ -7,6 +7,11 @@ import { Card } from '../components/ui/Card';
 import { Switch } from '../components/ui/Switch';
 import { supabase } from '../lib/supabaseClient';
 import { useTheme } from '../contexts/useTheme';
+import {
+  setAppLanguage,
+  type AppLanguage,
+  SUPPORTED_LANGUAGES,
+} from '../i18n';
 
 interface SettingsViewProps {
   items: StudyItem[];
@@ -16,12 +21,22 @@ interface SettingsViewProps {
 const sectionLabelClassName =
   'text-[11px] font-semibold tracking-wider text-text-secondary';
 
+const selectClassName =
+  'w-full cursor-pointer rounded-md border border-border bg-ink px-3.5 py-3 text-[15px] text-text-primary outline-none';
+
+function isAppLanguage(value: string): value is AppLanguage {
+  return (SUPPORTED_LANGUAGES as readonly string[]).includes(value);
+}
+
 export function SettingsView({ items, onBack }: Readonly<SettingsViewProps>) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { theme, toggleTheme } = useTheme();
   const withReminders = items.filter(
     (i) => i.notificationsOn && i.reminderTime,
   );
+  const currentLanguage: AppLanguage = isAppLanguage(i18n.language)
+    ? i18n.language
+    : 'pt';
 
   return (
     <div className="min-h-screen bg-base pb-8">
@@ -49,6 +64,32 @@ export function SettingsView({ items, onBack }: Readonly<SettingsViewProps>) {
             </div>
             <Switch checked={theme === 'dark'} onChange={toggleTheme} />
           </div>
+        </Card>
+
+        {/* Language */}
+        <Card>
+          <div className={`${sectionLabelClassName} mb-3`}>
+            {t('settings.language')}
+          </div>
+          <label
+            htmlFor="language-select"
+            className="mb-1.5 block text-sm font-medium text-text-primary"
+          >
+            {t('settings.languageLabel')}
+          </label>
+          <select
+            id="language-select"
+            className={selectClassName}
+            value={currentLanguage}
+            onChange={(e) => {
+              if (isAppLanguage(e.target.value)) {
+                setAppLanguage(e.target.value);
+              }
+            }}
+          >
+            <option value="pt">{t('settings.languagePt')}</option>
+            <option value="en-US">{t('settings.languageEnUS')}</option>
+          </select>
         </Card>
 
         {/* Notifications */}
