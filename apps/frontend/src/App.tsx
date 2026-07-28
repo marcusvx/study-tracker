@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
+import { useTranslation } from 'react-i18next';
 import { StudyItem, View } from './types/study';
 import { DashboardView } from './views/DashboardView';
 import { DetailView } from './views/DetailView';
@@ -18,6 +19,7 @@ import {
 } from './services/api';
 
 export function App() {
+  const { t } = useTranslation();
   const [session, setSession] = useState<Session | null | undefined>(undefined);
   const [items, setItems] = useState<StudyItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -175,7 +177,7 @@ export function App() {
             }}
           />
           <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-          <span>Carregando dados do servidor...</span>
+          <span>{t('app.loading')}</span>
         </div>
       ) : error ? (
         <div
@@ -191,9 +193,7 @@ export function App() {
             color: '#F87171',
           }}
         >
-          <p style={{ fontWeight: 600, fontSize: 16 }}>
-            Erro ao carregar dados
-          </p>
+          <p style={{ fontWeight: 600, fontSize: 16 }}>{t('app.loadError')}</p>
           <p style={{ color: '#94A3B8', fontSize: 14 }}>{error}</p>
           <button
             onClick={() => void loadData()}
@@ -207,7 +207,7 @@ export function App() {
               cursor: 'pointer',
             }}
           >
-            Tentar novamente
+            {t('app.retry')}
           </button>
         </div>
       ) : (

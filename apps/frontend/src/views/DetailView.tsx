@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StudyItem } from '../types/study';
 import { calcETA, formatDate, pct } from '../utils/eta';
 import { categoryMeta, IconArrowLeft } from '../components/icons/Index';
@@ -23,6 +24,7 @@ export function DetailView({
   onPause,
   onArchive,
 }: DetailViewProps) {
+  const { t } = useTranslation();
   const meta = categoryMeta[item.category];
   const { daysLeft, onTrack, etaDate } = calcETA(item);
   const p = pct(item);
@@ -62,7 +64,7 @@ export function DetailView({
             fontSize: 14,
           }}
         >
-          <IconArrowLeft size={18} /> Voltar
+          <IconArrowLeft size={18} /> {t('common.back')}
         </button>
         <div
           style={{
@@ -86,7 +88,7 @@ export function DetailView({
               textTransform: 'uppercase',
             }}
           >
-            {meta.label}
+            {t(meta.labelKey)}
           </span>
         </div>
         <div
@@ -138,7 +140,7 @@ export function DetailView({
                   letterSpacing: '0.05em',
                 }}
               >
-                PAINEL DE PROGRESSO
+                {t('detail.progressPanel')}
               </div>
               <div
                 style={{
@@ -147,8 +149,11 @@ export function DetailView({
                   marginTop: 4,
                 }}
               >
-                {item.currentProgress} de {item.totalScope} {item.unit}{' '}
-                concluidos
+                {t('detail.progressPanelSub', {
+                  current: item.currentProgress,
+                  total: item.totalScope,
+                  unit: item.unit,
+                })}
               </div>
             </div>
 
@@ -158,7 +163,7 @@ export function DetailView({
               size={90}
               strokeWidth={8}
               showLabel
-              label="RITMO"
+              label={t('detail.dialLabel')}
             />
           </div>
 
@@ -184,7 +189,7 @@ export function DetailView({
                 marginTop: 16,
               }}
             >
-              + Registrar Progresso
+              {t('detail.registerProgress')}
             </button>
           )}
         </div>
@@ -206,14 +211,14 @@ export function DetailView({
                 letterSpacing: '0.05em',
               }}
             >
-              PREVISÃO DE CONCLUSÃO (ETA)
+              {t('detail.etaTitle')}
             </div>
             <div style={{ display: 'flex', gap: 24 }}>
               <div>
                 <div
                   style={{ fontSize: 11, color: 'var(--text-muted, #8B929A)' }}
                 >
-                  Previsão atual
+                  {t('detail.etaCurrent')}
                 </div>
                 <div
                   style={{
@@ -234,7 +239,7 @@ export function DetailView({
                       color: 'var(--text-muted, #8B929A)',
                     }}
                   >
-                    Meta original
+                    {t('detail.etaOriginalGoal')}
                   </div>
                   <div
                     style={{
@@ -252,7 +257,7 @@ export function DetailView({
                 <div
                   style={{ fontSize: 11, color: 'var(--text-muted, #8B929A)' }}
                 >
-                  Dias restantes
+                  {t('detail.etaDaysLeft')}
                 </div>
                 <div
                   style={{
@@ -281,7 +286,7 @@ export function DetailView({
                 letterSpacing: '0.05em',
               }}
             >
-              HISTÓRICO RECENTE DE REGISTROS
+              {t('detail.chartHistoryTitle')}
             </div>
             <SvgBarChart data={chartData} />
           </div>
@@ -298,27 +303,31 @@ export function DetailView({
               letterSpacing: '0.05em',
             }}
           >
-            PARÂMETROS DE PLANEJAMENTO
+            {t('detail.paramsTitle')}
           </div>
           <div
             style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}
           >
             {[
               {
-                label: 'Cadência',
+                label: t('detail.cadence'),
                 value:
                   item.cadenceDays === 1
-                    ? 'Diário'
-                    : `A cada ${item.cadenceDays}d`,
+                    ? t('detail.cadenceDaily')
+                    : t('detail.cadenceEvery', { days: item.cadenceDays }),
               },
               {
-                label: 'Tempo por sessão',
-                value: `${item.sessionMinutes} min`,
+                label: t('detail.sessionTime'),
+                value: t('detail.sessionTimeValue', {
+                  minutes: item.sessionMinutes,
+                }),
               },
-              { label: 'Lembrete', value: item.reminderTime || '–' },
+              { label: t('detail.reminder'), value: item.reminderTime || '–' },
               {
-                label: 'Notificações',
-                value: item.notificationsOn ? 'Ativas' : 'Desativadas',
+                label: t('detail.notifications'),
+                value: item.notificationsOn
+                  ? t('detail.notificationsOn')
+                  : t('detail.notificationsOff'),
               },
             ].map((r) => (
               <div key={r.label}>
@@ -355,7 +364,7 @@ export function DetailView({
                 letterSpacing: '0.05em',
               }}
             >
-              HISTÓRICO CRONOLÓGICO
+              {t('detail.logHistoryTitle')}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               {[...item.log].reverse().map((l, i) => (
@@ -425,7 +434,7 @@ export function DetailView({
               border: 'none',
             }}
           >
-            Editar
+            {t('detail.edit')}
           </button>
           <button
             onClick={onPause}
@@ -437,7 +446,7 @@ export function DetailView({
               border: '1px solid var(--border, #2D3339)',
             }}
           >
-            {item.status === 'paused' ? 'Retomar' : 'Pausar'}
+            {item.status === 'paused' ? t('detail.resume') : t('detail.pause')}
           </button>
           <button
             onClick={onArchive}
@@ -448,7 +457,7 @@ export function DetailView({
               border: '1px solid rgba(201, 105, 79, 0.4)',
             }}
           >
-            Arquivar
+            {t('detail.archive')}
           </button>
         </div>
       </div>

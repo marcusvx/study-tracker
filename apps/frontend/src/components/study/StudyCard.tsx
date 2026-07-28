@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { StudyItem } from '../../types/study';
 import { calcETA, pct } from '../../utils/eta';
 import { categoryMeta } from '../icons/Index';
@@ -11,6 +12,7 @@ interface StudyCardProps {
 }
 
 export function StudyCard({ item, onRegister, onSelect }: StudyCardProps) {
+  const { t } = useTranslation();
   const meta = categoryMeta[item.category];
   const { daysLeft, onTrack } = calcETA(item);
   const p = pct(item);
@@ -34,11 +36,11 @@ export function StudyCard({ item, onRegister, onSelect }: StudyCardProps) {
           : 'rgba(201,105,79,0.12)';
 
   let rhythmText: string;
-  if (item.status === 'done') rhythmText = 'Concluído';
-  else if (item.status === 'paused') rhythmText = 'Pausado';
-  else if (daysLeft === Infinity) rhythmText = 'Sem dados suficientes';
-  else if (onTrack) rhythmText = `No ritmo · conclui em ${daysLeft}d`;
-  else rhythmText = `Atrasado · mais ${daysLeft}d que o planejado`;
+  if (item.status === 'done') rhythmText = t('studyCard.done');
+  else if (item.status === 'paused') rhythmText = t('studyCard.paused');
+  else if (daysLeft === Infinity) rhythmText = t('studyCard.noData');
+  else if (onTrack) rhythmText = t('studyCard.onTrack', { days: daysLeft });
+  else rhythmText = t('studyCard.late', { days: daysLeft });
 
   return (
     <div
@@ -93,7 +95,7 @@ export function StudyCard({ item, onRegister, onSelect }: StudyCardProps) {
                 textTransform: 'uppercase',
               }}
             >
-              {meta.label}
+              {t(meta.labelKey)}
             </span>
           </div>
 
@@ -186,7 +188,7 @@ export function StudyCard({ item, onRegister, onSelect }: StudyCardProps) {
               e.currentTarget.style.color = 'var(--accent, #E8A33D)';
             }}
           >
-            + Registrar
+            {t('studyCard.register')}
           </button>
         )}
       </div>

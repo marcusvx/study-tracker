@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { StudyItem } from '../types/study';
 import { IconArrowLeft } from '../components/icons/Index';
 import { supabase } from '../lib/supabaseClient';
@@ -9,6 +10,7 @@ interface SettingsViewProps {
 }
 
 export function SettingsView({ items, onBack }: SettingsViewProps) {
+  const { t } = useTranslation();
   const withReminders = items.filter(
     (i) => i.notificationsOn && i.reminderTime,
   );
@@ -42,7 +44,7 @@ export function SettingsView({ items, onBack }: SettingsViewProps) {
             fontSize: 14,
           }}
         >
-          <IconArrowLeft size={18} /> Voltar
+          <IconArrowLeft size={18} /> {t('common.back')}
         </button>
         <div
           style={{
@@ -51,7 +53,7 @@ export function SettingsView({ items, onBack }: SettingsViewProps) {
             color: 'var(--text-primary, #EDEEEC)',
           }}
         >
-          Configurações
+          {t('settings.title')}
         </div>
       </div>
 
@@ -74,11 +76,11 @@ export function SettingsView({ items, onBack }: SettingsViewProps) {
               letterSpacing: '0.05em',
             }}
           >
-            LEMBRETES ATIVOS
+            {t('settings.activeReminders')}
           </div>
           {withReminders.length === 0 && (
             <div style={{ fontSize: 14, color: 'var(--text-muted, #8B929A)' }}>
-              Nenhum lembrete configurado.
+              {t('settings.noReminders')}
             </div>
           )}
           {withReminders.map((i) => (
@@ -117,7 +119,7 @@ export function SettingsView({ items, onBack }: SettingsViewProps) {
               letterSpacing: '0.05em',
             }}
           >
-            CONTA
+            {t('settings.account')}
           </div>
           <div
             style={{
@@ -126,7 +128,7 @@ export function SettingsView({ items, onBack }: SettingsViewProps) {
               marginBottom: 14,
             }}
           >
-            Seus hábitos de estudo estão sincronizados na nuvem.
+            {t('settings.accountDesc')}
           </div>
           <button
             onClick={() => void supabase.auth.signOut()}
@@ -142,7 +144,7 @@ export function SettingsView({ items, onBack }: SettingsViewProps) {
               cursor: 'pointer',
             }}
           >
-            Sair
+            {t('settings.signOut')}
           </button>
         </div>
 
@@ -157,10 +159,10 @@ export function SettingsView({ items, onBack }: SettingsViewProps) {
               letterSpacing: '0.05em',
             }}
           >
-            SOBRE O STUDY TRACKER
+            {t('settings.about')}
           </div>
           <div style={{ fontSize: 14, color: 'var(--text-primary, #EDEEEC)' }}>
-            Study Tracker — v1.0.0
+            {t('settings.aboutVersion')}
           </div>
           <div
             style={{
@@ -169,7 +171,7 @@ export function SettingsView({ items, onBack }: SettingsViewProps) {
               marginTop: 4,
             }}
           >
-            Um instrumento de precisão para frentes de estudo paralelas.
+            {t('settings.aboutDesc')}
           </div>
         </div>
       </div>

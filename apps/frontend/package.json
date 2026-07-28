@@ -19,8 +19,10 @@
     "@capacitor/local-notifications": "^8.2.1",
     "@capacitor/push-notifications": "^8.1.2",
     "@supabase/supabase-js": "^2.110.8",
+    "i18next": "^26.3.6",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-i18next": "^17.0.11"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.4.2",

@@ -1,0 +1,117 @@
+{
+  "common": {
+    "appName": "Study Tracker",
+    "cancel": "Cancelar",
+    "back": "Voltar",
+    "optional": "(opcional)"
+  },
+  "app": {
+    "loading": "Carregando dados do servidor...",
+    "loadError": "Erro ao carregar dados",
+    "retry": "Tentar novamente"
+  },
+  "dashboard": {
+    "activeCount_one": "{{count}} frente de estudo ativa",
+    "activeCount_other": "{{count}} frentes de estudo ativas",
+    "tabAll": "Todos",
+    "tabActive": "Ativos",
+    "tabPaused": "Pausados",
+    "tabDone": "Concluídos",
+    "emptyList": "Nenhum item nesta lista."
+  },
+  "studyCard": {
+    "done": "Concluído",
+    "paused": "Pausado",
+    "noData": "Sem dados suficientes",
+    "onTrack": "No ritmo · conclui em {{days}}d",
+    "late": "Atrasado · mais {{days}}d que o planejado",
+    "register": "+ Registrar"
+  },
+  "detail": {
+    "progressPanel": "PAINEL DE PROGRESSO",
+    "progressPanelSub": "{{current}} de {{total}} {{unit}} concluidos",
+    "dialLabel": "RITMO",
+    "registerProgress": "+ Registrar Progresso",
+    "etaTitle": "PREVISÃO DE CONCLUSÃO (ETA)",
+    "etaCurrent": "Previsão atual",
+    "etaOriginalGoal": "Meta original",
+    "etaDaysLeft": "Dias restantes",
+    "chartHistoryTitle": "HISTÓRICO RECENTE DE REGISTROS",
+    "paramsTitle": "PARÂMETROS DE PLANEJAMENTO",
+    "cadence": "Cadência",
+    "cadenceDaily": "Diário",
+    "cadenceEvery": "A cada {{days}}d",
+    "sessionTime": "Tempo por sessão",
+    "sessionTimeValue": "{{minutes}} min",
+    "reminder": "Lembrete",
+    "notifications": "Notificações",
+    "notificationsOn": "Ativas",
+    "notificationsOff": "Desativadas",
+    "logHistoryTitle": "HISTÓRICO CRONOLÓGICO",
+    "edit": "Editar",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "archive": "Arquivar"
+  },
+  "createEdit": {
+    "titleEdit": "Editar item",
+    "titleNew": "Novo item de estudo",
+    "fieldTitle": "Título",
+    "fieldCategory": "Categoria",
+    "fieldUnit": "Unidade",
+    "unitPages": "Páginas",
+    "unitPercent": "Percentual",
+    "unitHours": "Horas",
+    "unitModules": "Módulos",
+    "fieldTotalScope": "Escopo total",
+    "fieldCurrentProgress": "Progresso atual",
+    "fieldDeadline": "Prazo final",
+    "fieldCadence": "Cadência dos Estudos",
+    "daily": "Diário",
+    "every": "A cada",
+    "days": "dias",
+    "fieldSessionMinutes": "Tempo por sessão (minutos)",
+    "fieldReminderTime": "Horário do lembrete",
+    "notifications": "Notificações",
+    "submitCreate": "Criar item",
+    "submitSave": "Salvar alterações"
+  },
+  "settings": {
+    "title": "Configurações",
+    "activeReminders": "LEMBRETES ATIVOS",
+    "noReminders": "Nenhum lembrete configurado.",
+    "account": "CONTA",
+    "accountDesc": "Seus hábitos de estudo estão sincronizados na nuvem.",
+    "signOut": "Sair",
+    "about": "SOBRE O STUDY TRACKER",
+    "aboutVersion": "Study Tracker — v1.0.0",
+    "aboutDesc": "Um instrumento de precisão para frentes de estudo paralelas."
+  },
+  "login": {
+    "signInSubtitle": "Entre na sua conta",
+    "signUpSubtitle": "Crie sua conta",
+    "emailPlaceholder": "E-mail",
+    "passwordPlaceholder": "Senha",
+    "signIn": "Entrar",
+    "signUp": "Criar conta",
+    "switchToSignUp": "Não tem conta? Criar uma agora",
+    "switchToSignIn": "Já tem conta? Entrar",
+    "signUpSuccess": "Conta criada! Verifique seu e-mail para confirmar o cadastro."
+  },
+  "progressSheet": {
+    "title": "Registrar progresso",
+    "amountLabel": "Quanto avançou?",
+    "amountPlaceholder": "Ex: 20 {{unit}}",
+    "minutesLabel": "Minutos gastos",
+    "minutesPlaceholder": "Ex: 30",
+    "noteLabel": "Nota",
+    "notePlaceholder": "Como foi a sessão?",
+    "save": "Salvar"
+  },
+  "category": {
+    "book": "Livro",
+    "cert": "Certificação",
+    "course": "Curso",
+    "work": "Trabalho"
+  }
+}

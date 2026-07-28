@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Category, StudyItem, Unit } from '../types/study';
 import { categoryMeta, IconArrowLeft } from '../components/icons/Index';
 
@@ -13,6 +14,7 @@ export function CreateEditView({
   onSave,
   onBack,
 }: CreateEditViewProps) {
+  const { t } = useTranslation();
   const [title, setTitle] = useState(initial?.title ?? '');
   const [category, setCategory] = useState<Category>(
     initial?.category ?? 'book',
@@ -54,10 +56,10 @@ export function CreateEditView({
 
   const units: Unit[] = ['pages', '%', 'hours', 'modules'];
   const unitLabels: Record<Unit, string> = {
-    pages: 'Páginas',
-    '%': 'Percentual',
-    hours: 'Horas',
-    modules: 'Módulos',
+    pages: t('createEdit.unitPages'),
+    '%': t('createEdit.unitPercent'),
+    hours: t('createEdit.unitHours'),
+    modules: t('createEdit.unitModules'),
   };
 
   return (
@@ -89,7 +91,7 @@ export function CreateEditView({
             fontSize: 14,
           }}
         >
-          <IconArrowLeft size={18} /> Cancelar
+          <IconArrowLeft size={18} /> {t('common.cancel')}
         </button>
         <div
           style={{
@@ -98,7 +100,7 @@ export function CreateEditView({
             color: 'var(--text-primary, #EDEEEC)',
           }}
         >
-          {initial ? 'Editar item' : 'Novo item de estudo'}
+          {initial ? t('createEdit.titleEdit') : t('createEdit.titleNew')}
         </div>
       </div>
 
@@ -112,7 +114,7 @@ export function CreateEditView({
       >
         {/* Title */}
         <div style={cardStyle}>
-          <label style={labelStyle}>Título</label>
+          <label style={labelStyle}>{t('createEdit.fieldTitle')}</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -121,7 +123,7 @@ export function CreateEditView({
           />
 
           {/* Category */}
-          <label style={labelStyle}>Categoria</label>
+          <label style={labelStyle}>{t('createEdit.fieldCategory')}</label>
           <div
             style={{
               display: 'grid',
@@ -156,7 +158,7 @@ export function CreateEditView({
                 >
                   <m.Icon size={20} />
                   <span style={{ fontSize: 10, fontWeight: 600 }}>
-                    {m.label}
+                    {t(m.labelKey)}
                   </span>
                 </button>
               );
@@ -164,7 +166,7 @@ export function CreateEditView({
           </div>
 
           {/* Unit */}
-          <label style={labelStyle}>Unidade</label>
+          <label style={labelStyle}>{t('createEdit.fieldUnit')}</label>
           <div
             style={{
               display: 'flex',
@@ -209,7 +211,9 @@ export function CreateEditView({
             style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}
           >
             <div>
-              <label style={labelStyle}>Escopo total</label>
+              <label style={labelStyle}>
+                {t('createEdit.fieldTotalScope')}
+              </label>
               <input
                 type="number"
                 value={totalScope}
@@ -219,7 +223,9 @@ export function CreateEditView({
               />
             </div>
             <div>
-              <label style={labelStyle}>Progresso atual</label>
+              <label style={labelStyle}>
+                {t('createEdit.fieldCurrentProgress')}
+              </label>
               <input
                 type="number"
                 value={currentProgress}
@@ -230,9 +236,9 @@ export function CreateEditView({
             </div>
           </div>
           <label style={labelStyle}>
-            Prazo final{' '}
+            {t('createEdit.fieldDeadline')}{' '}
             <span style={{ color: 'var(--text-muted, #8B929A)' }}>
-              (opcional)
+              {t('common.optional')}
             </span>
           </label>
           <input
@@ -245,7 +251,7 @@ export function CreateEditView({
 
         {/* Cadence */}
         <div style={cardStyle}>
-          <label style={labelStyle}>Cadência dos Estudos</label>
+          <label style={labelStyle}>{t('createEdit.fieldCadence')}</label>
           <div
             style={{
               display: 'flex',
@@ -276,7 +282,7 @@ export function CreateEditView({
                     : 'var(--text-secondary, #8B929A)',
               }}
             >
-              Diário
+              {t('createEdit.daily')}
             </button>
             <div
               style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 2 }}
@@ -307,7 +313,7 @@ export function CreateEditView({
                       : 'var(--text-secondary, #8B929A)',
                 }}
               >
-                A cada
+                {t('createEdit.every')}
               </button>
               {cadenceDays > 1 && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -342,14 +348,16 @@ export function CreateEditView({
                       color: 'var(--text-muted, #8B929A)',
                     }}
                   >
-                    dias
+                    {t('createEdit.days')}
                   </span>
                 </div>
               )}
             </div>
           </div>
 
-          <label style={labelStyle}>Tempo por sessão (minutos)</label>
+          <label style={labelStyle}>
+            {t('createEdit.fieldSessionMinutes')}
+          </label>
           <input
             type="number"
             value={sessionMinutes}
@@ -358,7 +366,9 @@ export function CreateEditView({
             style={inputStyle}
           />
 
-          <label style={labelStyle}>Horário do lembrete</label>
+          <label style={labelStyle}>
+            {t('createEdit.fieldReminderTime')}
+          </label>
           <input
             type="time"
             value={reminderTime}
@@ -381,7 +391,7 @@ export function CreateEditView({
                 color: 'var(--text-primary, #EDEEEC)',
               }}
             >
-              Notificações
+              {t('createEdit.notifications')}
             </span>
             <div
               onClick={() => setNotificationsOn(!notificationsOn)}
@@ -427,7 +437,7 @@ export function CreateEditView({
             width: '100%',
           }}
         >
-          {initial ? 'Salvar alterações' : 'Criar item'}
+          {initial ? t('createEdit.submitSave') : t('createEdit.submitCreate')}
         </button>
       </div>
     </div>

@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabaseClient';
 
 export function LoginView() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<'sign-in' | 'sign-up'>('sign-in');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -9,7 +11,7 @@ export function LoginView() {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -23,9 +25,7 @@ export function LoginView() {
     if (error) {
       setError(error.message);
     } else if (mode === 'sign-up') {
-      setMessage(
-        'Conta criada! Verifique seu e-mail para confirmar o cadastro.',
-      );
+      setMessage(t('login.signUpSuccess'));
     }
     setLoading(false);
   };

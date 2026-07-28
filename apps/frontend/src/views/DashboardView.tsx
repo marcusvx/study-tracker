@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FilterTab, StudyItem } from '../types/study';
 import { IconPlus, IconSettings } from '../components/icons/Index';
 import { StudyCard } from '../components/study/StudyCard';
@@ -18,6 +19,7 @@ export function DashboardView({
   onNew,
   onSettings,
 }: DashboardViewProps) {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<FilterTab>('all');
 
   const filtered = items.filter((i) => {
@@ -29,11 +31,13 @@ export function DashboardView({
   });
 
   const tabs: { key: FilterTab; label: string }[] = [
-    { key: 'all', label: 'Todos' },
-    { key: 'active', label: 'Ativos' },
-    { key: 'paused', label: 'Pausados' },
-    { key: 'done', label: 'Concluídos' },
+    { key: 'all', label: t('dashboard.tabAll') },
+    { key: 'active', label: t('dashboard.tabActive') },
+    { key: 'paused', label: t('dashboard.tabPaused') },
+    { key: 'done', label: t('dashboard.tabDone') },
   ];
+
+  const activeCount = items.filter((i) => i.status === 'active').length;
 
   return (
     <div
@@ -72,7 +76,7 @@ export function DashboardView({
                 color: 'var(--text-primary, #EDEEEC)',
               }}
             >
-              Study Tracker
+              {t('common.appName')}
             </div>
             <div
               style={{
@@ -81,8 +85,7 @@ export function DashboardView({
                 marginTop: 2,
               }}
             >
-              {items.filter((i) => i.status === 'active').length} frentes de
-              estudo ativas
+              {t('dashboard.activeCount', { count: activeCount })}
             </div>
           </div>
           <button
@@ -149,7 +152,7 @@ export function DashboardView({
               fontSize: 14,
             }}
           >
-            Nenhum item nesta lista.
+            {t('dashboard.emptyList')}
           </div>
         )}
         {filtered.map((item) => (

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StudyItem } from '../../types/study';
 
 interface ProgressSheetProps {
@@ -8,6 +9,7 @@ interface ProgressSheetProps {
 }
 
 export function ProgressSheet({ item, onSave, onClose }: ProgressSheetProps) {
+  const { t } = useTranslation();
   const [amount, setAmount] = useState('');
   const [minutes, setMinutes] = useState('');
   const [note, setNote] = useState('');
@@ -73,7 +75,7 @@ export function ProgressSheet({ item, onSave, onClose }: ProgressSheetProps) {
               color: 'var(--text-primary, #EDEEEC)',
             }}
           >
-            Registrar progresso
+            {t('progressSheet.title')}
           </div>
           <div
             style={{
@@ -86,7 +88,7 @@ export function ProgressSheet({ item, onSave, onClose }: ProgressSheetProps) {
           </div>
 
           <label style={labelStyle}>
-            Quanto avançou?{' '}
+            {t('progressSheet.amountLabel')}{' '}
             <span style={{ color: 'var(--text-muted, #8B929A)' }}>
               ({item.unit})
             </span>
@@ -95,30 +97,32 @@ export function ProgressSheet({ item, onSave, onClose }: ProgressSheetProps) {
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            placeholder={`Ex: 20 ${item.unit}`}
+            placeholder={t('progressSheet.amountPlaceholder', {
+              unit: item.unit,
+            })}
             style={inputStyle}
             autoFocus
           />
 
-          <label style={labelStyle}>Minutos gastos</label>
+          <label style={labelStyle}>{t('progressSheet.minutesLabel')}</label>
           <input
             type="number"
             value={minutes}
             onChange={(e) => setMinutes(e.target.value)}
-            placeholder="Ex: 30"
+            placeholder={t('progressSheet.minutesPlaceholder')}
             style={inputStyle}
           />
 
           <label style={labelStyle}>
-            Nota{' '}
+            {t('progressSheet.noteLabel')}{' '}
             <span style={{ color: 'var(--text-muted, #8B929A)' }}>
-              (opcional)
+              {t('common.optional')}
             </span>
           </label>
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Como foi a sessão?"
+            placeholder={t('progressSheet.notePlaceholder')}
             rows={2}
             style={{ ...inputStyle, resize: 'none', fontFamily: 'inherit' }}
           />
@@ -141,7 +145,7 @@ export function ProgressSheet({ item, onSave, onClose }: ProgressSheetProps) {
             onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
           >
-            Salvar
+            {t('progressSheet.save')}
           </button>
         </div>
       </div>
