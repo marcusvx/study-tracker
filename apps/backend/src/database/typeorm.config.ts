@@ -3,6 +3,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSourceOptions } from 'typeorm';
 import { StudyItemEntity } from '../study-items/study-item.entity';
 import { ProgressLogEntity } from '../progress-logs/progress-log.entity';
+import { UserEntity } from '../users/user.entity';
 
 // Local dev points this at docker-compose Postgres; production points it at Supabase.
 // Only the latter needs SSL, gated on NODE_ENV rather than on the URL itself.
@@ -13,7 +14,7 @@ const baseOptions: DataSourceOptions = {
     process.env.NODE_ENV === 'production'
       ? { rejectUnauthorized: false }
       : false,
-  entities: [StudyItemEntity, ProgressLogEntity],
+  entities: [UserEntity, StudyItemEntity, ProgressLogEntity],
   synchronize: false,
 };
 

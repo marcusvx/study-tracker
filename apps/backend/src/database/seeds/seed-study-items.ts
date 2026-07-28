@@ -1,7 +1,9 @@
 import { DataSource } from 'typeorm';
 import { StudyItemEntity } from '../../study-items/study-item.entity';
 import { ProgressLogEntity } from '../../progress-logs/progress-log.entity';
+import { UserEntity } from '../../users/user.entity';
 import { SeedResult } from './seed-records';
+import { requireSeedUserId } from './seed-users';
 
 const initialItems = [
   {
@@ -88,6 +90,16 @@ const initialItems = [
 export async function seedStudyItems(
   dataSource: DataSource,
 ): Promise<SeedResult> {
+  const userId = requireSeedUserId();
+  const user = await dataSource
+    .getRepository(UserEntity)
+    .findOneBy({ id: userId });
+  if (!user) {
+    throw new Error(
+      `Seed user ${userId} not found. Run the users seed before study_items.`,
+    );
+  }
+
   const itemRepo = dataSource.getRepository(StudyItemEntity);
   const logRepo = dataSource.getRepository(ProgressLogEntity);
 
@@ -95,14 +107,17 @@ export async function seedStudyItems(
   let skipped = 0;
 
   for (const itemData of initialItems) {
-    const exists = await itemRepo.existsBy({ title: itemData.title });
+    const exists = await itemRepo.existsBy({
+      title: itemData.title,
+      userId: user.id,
+    });
     if (exists) {
       skipped++;
       continue;
     }
 
     const { log, ...itemFields } = itemData;
-    const item = itemRepo.create(itemFields);
+    const item = itemRepo.create({ ...itemFields, userId: user.id });
     const savedItem = await itemRepo.save(item);
 
     if (log && log.length > 0) {
