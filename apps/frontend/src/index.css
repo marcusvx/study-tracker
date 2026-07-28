@@ -20,6 +20,11 @@
   --warning-light: rgba(251, 191, 36, 0.12);
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  /* Recessed "well" background for inputs/selects/chips. Historically this
+     was the same static color as --color-ink, which worked only because
+     the app was dark-only; now that light theme exists it must track
+     theme so text-primary (dark in light theme) stays readable on it. */
+  --input-bg: #14171A;
 }
 
 [data-theme='light'] {
@@ -37,6 +42,7 @@
   --success-light: rgba(52, 211, 153, 0.12);
   --warning: #FBBF24;
   --warning-light: rgba(251, 191, 36, 0.12);
+  --input-bg: #F4F5F6;
 }
 
 @theme {
@@ -68,6 +74,10 @@
      (Also sidesteps `text-base` colliding with Tailwind's built-in
      font-size utility of the same name.) */
   --color-ink: #14171A;
+
+  /* Theme-aware recessed background for inputs/selects/chips — see
+     --input-bg above for why this is distinct from --color-ink. */
+  --color-input: var(--input-bg);
 }
 
 @keyframes spin {
@@ -87,6 +97,13 @@
 
 * {
   box-sizing: border-box;
+}
+
+/* Unlayered on purpose: must win over Tailwind's `p-5`/`pt-5` utilities
+   (which live in @layer utilities) regardless of class order, so headers
+   clear the iOS status bar/notch instead of sitting under it. */
+.pt-safe {
+  padding-top: calc(1.25rem + env(safe-area-inset-top, 0px));
 }
 
 body {

@@ -13,7 +13,7 @@ const labelClassName =
   'mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-text-secondary';
 
 const inputClassName =
-  'mb-4 w-full rounded-md border border-border bg-ink px-3.5 py-3 text-[15px] text-text-primary outline-none';
+  'mb-4 w-full rounded-md border border-border bg-input px-3.5 py-3 text-[15px] text-text-primary outline-none';
 
 export function ProgressSheet({
   item,

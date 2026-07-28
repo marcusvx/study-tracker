@@ -1,12 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { StudyItem } from '../types/study';
+import { IconMonitor } from '../components/icons/IconMonitor';
 import { IconMoon } from '../components/icons/IconMoon';
 import { IconSun } from '../components/icons/IconSun';
 import { BackButton } from '../components/ui/BackButton';
 import { Card } from '../components/ui/Card';
-import { Switch } from '../components/ui/Switch';
+import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { supabase } from '../lib/supabaseClient';
 import { useTheme } from '../contexts/useTheme';
+import type { ThemeMode } from '../contexts/ThemeContext';
 import {
   setAppLanguage,
   type AppLanguage,
@@ -22,7 +24,7 @@ const sectionLabelClassName =
   'text-[11px] font-semibold tracking-wider text-text-secondary';
 
 const selectClassName =
-  'w-full cursor-pointer rounded-md border border-border bg-ink px-3.5 py-3 text-[15px] text-text-primary outline-none';
+  'w-full cursor-pointer rounded-md border border-border bg-input px-3.5 py-3 text-[15px] text-text-primary outline-none';
 
 function isAppLanguage(value: string): value is AppLanguage {
   return (SUPPORTED_LANGUAGES as readonly string[]).includes(value);
@@ -30,7 +32,7 @@ function isAppLanguage(value: string): value is AppLanguage {
 
 export function SettingsView({ items, onBack }: Readonly<SettingsViewProps>) {
   const { t, i18n } = useTranslation();
-  const { theme, toggleTheme } = useTheme();
+  const { mode, setThemeMode } = useTheme();
   const withReminders = items.filter(
     (i) => i.notificationsOn && i.reminderTime,
   );
@@ -40,7 +42,7 @@ export function SettingsView({ items, onBack }: Readonly<SettingsViewProps>) {
 
   return (
     <div className="min-h-screen bg-base pb-8">
-      <div className="border-b border-border bg-surface p-5">
+      <div className="pt-safe border-b border-border bg-surface p-5">
         <BackButton onClick={onBack} label={t('common.back')} />
         <div className="text-xl font-bold text-text-primary">
           {t('settings.title')}
@@ -53,17 +55,27 @@ export function SettingsView({ items, onBack }: Readonly<SettingsViewProps>) {
           <div className={`${sectionLabelClassName} mb-3`}>
             {t('settings.appearance')}
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-medium text-text-primary">
-              {theme === 'dark' ? (
-                <IconMoon size={16} />
-              ) : (
-                <IconSun size={16} />
-              )}
-              {t('settings.darkTheme')}
-            </div>
-            <Switch checked={theme === 'dark'} onChange={toggleTheme} />
-          </div>
+          <SegmentedControl<ThemeMode>
+            value={mode}
+            onChange={setThemeMode}
+            options={[
+              {
+                value: 'system',
+                label: t('settings.themeSystem'),
+                icon: <IconMonitor size={15} />,
+              },
+              {
+                value: 'light',
+                label: t('settings.themeLight'),
+                icon: <IconSun size={15} />,
+              },
+              {
+                value: 'dark',
+                label: t('settings.themeDark'),
+                icon: <IconMoon size={15} />,
+              },
+            ]}
+          />
         </Card>
 
         {/* Language */}

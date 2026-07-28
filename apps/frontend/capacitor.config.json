@@ -3,6 +3,9 @@
   "appName": "Study Tracker",
   "webDir": "dist",
   "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": true
+  },
   "plugins": {
     "LocalNotifications": {
       "smallIcon": "ic_stat_icon_config_sample",

@@ -43,7 +43,7 @@ export function DashboardView({
   return (
     <div className="min-h-screen bg-base pb-[100px]">
       {/* Top bar */}
-      <div className="sticky top-0 z-10 border-b border-border bg-surface px-5 pt-5">
+      <div className="pt-safe sticky top-0 z-10 border-b border-border bg-surface px-5">
         <div className="mb-4 flex items-center justify-between">
           <div>
             <div className="font-mono text-xl font-bold tracking-[-0.02em] text-text-primary">

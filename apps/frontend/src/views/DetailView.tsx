@@ -62,7 +62,7 @@ export function DetailView({
   return (
     <div className="min-h-screen bg-base pb-8">
       {/* Header */}
-      <div className="border-b border-border bg-surface p-5">
+      <div className="pt-safe border-b border-border bg-surface p-5">
         <BackButton onClick={onBack} label={t('common.back')} />
         <div className="mb-2 flex items-center gap-2">
           {/* meta.color/meta.bg are a runtime lookup keyed by item.category */}

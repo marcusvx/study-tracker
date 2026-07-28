@@ -12,7 +12,16 @@ async function bootstrap() {
   app.set('trust proxy', 1);
 
   const frontendOrigin = process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173';
-  app.enableCors({ origin: frontendOrigin });
+  // Capacitor's WebView serves the app from its own scheme regardless of
+  // environment, so these origins must always be allowed alongside the web frontend.
+  app.enableCors({
+    origin: [
+      frontendOrigin,
+      'capacitor://localhost',
+      'http://localhost',
+      'https://localhost',
+    ],
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({

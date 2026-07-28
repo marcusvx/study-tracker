@@ -1,8 +1,16 @@
+import { Capacitor } from '@capacitor/core';
 import { StudyItem } from '../types/study';
 import { supabase } from '../lib/supabaseClient';
 
-const API_BASE_URL =
+const configuredBaseUrl =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
+// The Android emulator's "localhost" refers to the emulated device itself,
+// not the host machine — 10.0.2.2 is the special alias back to the host.
+const API_BASE_URL =
+  Capacitor.getPlatform() === 'android'
+    ? configuredBaseUrl.replace('localhost', '10.0.2.2')
+    : configuredBaseUrl;
 
 async function authHeaders(): Promise<HeadersInit> {
   const {

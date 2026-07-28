@@ -28,10 +28,10 @@ const labelClassName =
   'mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-text-secondary';
 
 const inputClassName =
-  'w-full rounded-md border border-border bg-ink px-3.5 py-3 text-[15px] text-text-primary outline-none';
+  'w-full rounded-md border border-border bg-input px-3.5 py-3 text-[15px] text-text-primary outline-none';
 
 const inputErrorClassName =
-  'w-full rounded-md border border-alert bg-ink px-3.5 py-3 text-[15px] text-text-primary outline-none';
+  'w-full rounded-md border border-alert bg-input px-3.5 py-3 text-[15px] text-text-primary outline-none';
 
 /** Always rendered so validation text does not shift following content. */
 function FieldError({ message }: Readonly<{ message?: string }>) {
@@ -52,13 +52,13 @@ const chipToggle = cva('cursor-pointer border transition-[all] duration-150', {
   variants: {
     selected: {
       true: 'border-[1.5px] border-accent bg-accent-light text-accent',
-      false: 'border-border bg-ink text-[var(--text-secondary)]',
+      false: 'border-border bg-input text-[var(--text-secondary)]',
     },
   },
 });
 
 const stepperButtonClassName =
-  'flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-ink text-[16px] font-bold text-text-primary';
+  'flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-input text-[16px] font-bold text-text-primary';
 
 export function CreateEditView({
   initial,
@@ -150,7 +150,7 @@ export function CreateEditView({
 
   return (
     <div className="min-h-screen bg-base pb-12">
-      <div className="border-b border-border bg-surface p-5">
+      <div className="pt-safe border-b border-border bg-surface p-5">
         <BackButton onClick={onBack} label={t('common.cancel')} />
         <div className="text-xl font-bold text-text-primary">
           {initial ? t('createEdit.titleEdit') : t('createEdit.titleNew')}
@@ -186,7 +186,7 @@ export function CreateEditView({
                   key={c}
                   type="button"
                   onClick={() => setCategory(c)}
-                  className="flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border border-border bg-ink px-2 py-3 text-text-secondary transition-[all] duration-150"
+                  className="flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border border-border bg-input px-2 py-3 text-text-secondary transition-[all] duration-150"
                   style={
                     active
                       ? {

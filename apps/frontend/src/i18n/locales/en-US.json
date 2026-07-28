@@ -88,7 +88,9 @@
   "settings": {
     "title": "Settings",
     "appearance": "APPEARANCE",
-    "darkTheme": "Dark theme",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
     "language": "LANGUAGE",
     "languageLabel": "Language",
     "languagePt": "Português",
