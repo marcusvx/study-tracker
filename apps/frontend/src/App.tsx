@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
+import toast, { Toaster } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { StudyItem, View } from './types/study';
 import { DashboardView } from './views/DashboardView';
@@ -80,9 +81,10 @@ export function App() {
     try {
       const updatedItem = await addProgressLog(id, { amount, minutes, note });
       setItems((prev) => prev.map((i) => (i.id === id ? updatedItem : i)));
+      toast.success(t('toasts.registerSuccess'));
     } catch (err: any) {
       console.error('Error adding progress log:', err);
-      alert('Erro ao registrar progresso no servidor.');
+      toast.error(t('toasts.registerError'));
     } finally {
       setSheetItemId(null);
     }
@@ -96,15 +98,17 @@ export function App() {
         const { id, ...updateFields } = data;
         const updatedItem = await updateStudyItem(id, updateFields);
         setItems((prev) => prev.map((i) => (i.id === id ? updatedItem : i)));
+        toast.success(t('toasts.updateSuccess'));
       } else {
         const newItem = await createStudyItem(data);
         setItems((prev) => [newItem, ...prev]);
+        toast.success(t('toasts.createSuccess'));
       }
       setView('dashboard');
       setEditItem(undefined);
     } catch (err: any) {
       console.error('Error saving study item:', err);
-      alert('Erro ao salvar item no servidor.');
+      toast.error(t('toasts.saveError'));
     }
   };
 
@@ -112,9 +116,14 @@ export function App() {
     try {
       const updatedItem = await togglePauseStudyItem(id);
       setItems((prev) => prev.map((i) => (i.id === id ? updatedItem : i)));
+      toast.success(
+        updatedItem.status === 'paused'
+          ? t('toasts.pauseSuccess')
+          : t('toasts.resumeSuccess'),
+      );
     } catch (err: any) {
       console.error('Error toggling pause state:', err);
-      alert('Erro ao alterar status no servidor.');
+      toast.error(t('toasts.pauseError'));
     }
   };
 
@@ -123,9 +132,10 @@ export function App() {
       await deleteStudyItem(id);
       setItems((prev) => prev.filter((i) => i.id !== id));
       setView('dashboard');
+      toast.success(t('toasts.archiveSuccess'));
     } catch (err: any) {
       console.error('Error deleting study item:', err);
-      alert('Erro ao arquivar item no servidor.');
+      toast.error(t('toasts.archiveError'));
     }
   };
 
@@ -154,6 +164,19 @@ export function App() {
         background: 'var(--bg-base, #14171A)',
       }}
     >
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: 'var(--surface-card, #1E2226)',
+            color: 'var(--text-primary, #EDEEEC)',
+            border: '1px solid var(--border, #2D3339)',
+            fontSize: 14,
+          },
+          success: { iconTheme: { primary: '#E8A33D', secondary: '#14171A' } },
+          error: { iconTheme: { primary: '#C9694F', secondary: '#14171A' } },
+        }}
+      />
       {loading ? (
         <div
           style={{

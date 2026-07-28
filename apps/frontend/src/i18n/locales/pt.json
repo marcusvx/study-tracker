@@ -110,6 +110,18 @@
     "notePlaceholder": "Como foi a sessão?",
     "save": "Salvar"
   },
+  "toasts": {
+    "registerSuccess": "Progresso registrado com sucesso.",
+    "registerError": "Erro ao registrar progresso no servidor.",
+    "createSuccess": "Item criado com sucesso.",
+    "updateSuccess": "Item atualizado com sucesso.",
+    "saveError": "Erro ao salvar item no servidor.",
+    "pauseSuccess": "Item pausado.",
+    "resumeSuccess": "Item retomado.",
+    "pauseError": "Erro ao alterar status no servidor.",
+    "archiveSuccess": "Item arquivado.",
+    "archiveError": "Erro ao arquivar item no servidor."
+  },
   "category": {
     "book": "Livro",
     "cert": "Certificação",
