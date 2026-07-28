@@ -4,7 +4,7 @@ export interface SvgBarChartProps {
   data: { date: string; progresso: number }[];
 }
 
-export function SvgBarChart({ data }: SvgBarChartProps) {
+export function SvgBarChart({ data }: Readonly<SvgBarChartProps>) {
   const W = 340;
   const H = 120;
   const pad = { top: 12, bottom: 24, left: 4, right: 4 };

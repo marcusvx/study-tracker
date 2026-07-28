@@ -54,7 +54,7 @@ export function CreateEditView({
   initial,
   onSave,
   onBack,
-}: CreateEditViewProps) {
+}: Readonly<CreateEditViewProps>) {
   const { t } = useTranslation();
   const [title, setTitle] = useState(initial?.title ?? '');
   const [category, setCategory] = useState<Category>(
@@ -82,11 +82,11 @@ export function CreateEditView({
   const validate = (): FieldErrors => {
     const next: FieldErrors = {};
     if (!title.trim()) next.title = t('createEdit.errorTitleRequired');
-    if (!totalScope || parseFloat(totalScope) <= 0)
+    if (!totalScope || Number.parseFloat(totalScope) <= 0)
       next.totalScope = t('createEdit.errorTotalScopeRequired');
-    if (currentProgress && parseFloat(currentProgress) < 0)
+    if (currentProgress && Number.parseFloat(currentProgress) < 0)
       next.currentProgress = t('createEdit.errorCurrentProgressInvalid');
-    if (sessionMinutes && parseInt(sessionMinutes) <= 0)
+    if (sessionMinutes && Number.parseInt(sessionMinutes) <= 0)
       next.sessionMinutes = t('createEdit.errorSessionMinutesInvalid');
     return next;
   };
@@ -105,11 +105,11 @@ export function CreateEditView({
         title: title.trim(),
         category,
         unit,
-        totalScope: parseFloat(totalScope),
-        currentProgress: parseFloat(currentProgress) || 0,
+        totalScope: Number.parseFloat(totalScope),
+        currentProgress: Number.parseFloat(currentProgress) || 0,
         deadline: deadline || undefined,
         cadenceDays,
-        sessionMinutes: parseInt(sessionMinutes) || 30,
+        sessionMinutes: Number.parseInt(sessionMinutes) || 30,
         reminderTime: reminderTime || undefined,
         notificationsOn,
         status: initial?.status ?? 'active',

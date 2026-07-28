@@ -6,7 +6,7 @@ import { BackButton } from '../components/ui/BackButton';
 import { Card } from '../components/ui/Card';
 import { Switch } from '../components/ui/Switch';
 import { supabase } from '../lib/supabaseClient';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/useTheme';
 
 interface SettingsViewProps {
   items: StudyItem[];
@@ -16,7 +16,7 @@ interface SettingsViewProps {
 const sectionLabelClassName =
   'text-[11px] font-semibold tracking-wider text-text-secondary';
 
-export function SettingsView({ items, onBack }: SettingsViewProps) {
+export function SettingsView({ items, onBack }: Readonly<SettingsViewProps>) {
   const { t } = useTranslation();
   const { theme, toggleTheme } = useTheme();
   const withReminders = items.filter(

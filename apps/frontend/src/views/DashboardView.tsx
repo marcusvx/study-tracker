@@ -19,7 +19,7 @@ export function DashboardView({
   onSelect,
   onNew,
   onSettings,
-}: DashboardViewProps) {
+}: Readonly<DashboardViewProps>) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<FilterTab>('all');
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import toast, { Toaster } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -155,6 +155,115 @@ export function App() {
     return <LoginView />;
   }
 
+  let content: ReactNode;
+  if (loading) {
+    content = (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          color: '#94A3B8',
+          gap: 12,
+        }}
+      >
+        <Spinner size={32} color="#3B82F6" />
+        <span>{t('app.loading')}</span>
+      </div>
+    );
+  } else if (error) {
+    content = (
+      <div
+        style={{
+          padding: 24,
+          textAlign: 'center',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 16,
+          color: '#F87171',
+        }}
+      >
+        <p style={{ fontWeight: 600, fontSize: 16 }}>{t('app.loadError')}</p>
+        <p style={{ color: '#94A3B8', fontSize: 14 }}>{error}</p>
+        <button
+          onClick={() => void loadData()}
+          style={{
+            padding: '10px 20px',
+            borderRadius: 8,
+            background: '#2563EB',
+            color: '#FFF',
+            border: 'none',
+            fontWeight: 600,
+            cursor: 'pointer',
+          }}
+        >
+          {t('app.retry')}
+        </button>
+      </div>
+    );
+  } else {
+    content = (
+      <>
+        {view === 'dashboard' && (
+          <DashboardView
+            items={items}
+            onRegister={(id) => setSheetItemId(id)}
+            onSelect={(id) => {
+              setActiveId(id);
+              setView('detail');
+            }}
+            onNew={() => {
+              setEditItem(undefined);
+              setView('create');
+            }}
+            onSettings={() => setView('settings')}
+          />
+        )}
+
+        {view === 'detail' && activeItem && (
+          <DetailView
+            item={activeItem}
+            onBack={() => setView('dashboard')}
+            onRegister={() => setSheetItemId(activeItem.id)}
+            onEdit={() => {
+              setEditItem(activeItem);
+              setView('create');
+            }}
+            onPause={() => void handlePause(activeItem.id)}
+            onArchive={() => void handleArchive(activeItem.id)}
+          />
+        )}
+
+        {view === 'create' && (
+          <CreateEditView
+            initial={editItem}
+            onSave={handleSaveItem}
+            onBack={() => setView(editItem ? 'detail' : 'dashboard')}
+          />
+        )}
+
+        {view === 'settings' && (
+          <SettingsView items={items} onBack={() => setView('dashboard')} />
+        )}
+
+        {sheetItem && (
+          <ProgressSheet
+            item={sheetItem}
+            onSave={(amount, minutes, note) =>
+              void handleRegister(sheetItem.id, amount, minutes, note)
+            }
+            onClose={() => setSheetItemId(null)}
+          />
+        )}
+      </>
+    );
+  }
+
   return (
     <div
       style={{
@@ -178,107 +287,7 @@ export function App() {
           error: { iconTheme: { primary: '#C9694F', secondary: '#14171A' } },
         }}
       />
-      {loading ? (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '100vh',
-            color: '#94A3B8',
-            gap: 12,
-          }}
-        >
-          <Spinner size={32} color="#3B82F6" />
-          <span>{t('app.loading')}</span>
-        </div>
-      ) : error ? (
-        <div
-          style={{
-            padding: 24,
-            textAlign: 'center',
-            minHeight: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 16,
-            color: '#F87171',
-          }}
-        >
-          <p style={{ fontWeight: 600, fontSize: 16 }}>{t('app.loadError')}</p>
-          <p style={{ color: '#94A3B8', fontSize: 14 }}>{error}</p>
-          <button
-            onClick={() => void loadData()}
-            style={{
-              padding: '10px 20px',
-              borderRadius: 8,
-              background: '#2563EB',
-              color: '#FFF',
-              border: 'none',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            {t('app.retry')}
-          </button>
-        </div>
-      ) : (
-        <>
-          {view === 'dashboard' && (
-            <DashboardView
-              items={items}
-              onRegister={(id) => setSheetItemId(id)}
-              onSelect={(id) => {
-                setActiveId(id);
-                setView('detail');
-              }}
-              onNew={() => {
-                setEditItem(undefined);
-                setView('create');
-              }}
-              onSettings={() => setView('settings')}
-            />
-          )}
-
-          {view === 'detail' && activeItem && (
-            <DetailView
-              item={activeItem}
-              onBack={() => setView('dashboard')}
-              onRegister={() => setSheetItemId(activeItem.id)}
-              onEdit={() => {
-                setEditItem(activeItem);
-                setView('create');
-              }}
-              onPause={() => void handlePause(activeItem.id)}
-              onArchive={() => void handleArchive(activeItem.id)}
-            />
-          )}
-
-          {view === 'create' && (
-            <CreateEditView
-              initial={editItem}
-              onSave={handleSaveItem}
-              onBack={() => setView(editItem ? 'detail' : 'dashboard')}
-            />
-          )}
-
-          {view === 'settings' && (
-            <SettingsView items={items} onBack={() => setView('dashboard')} />
-          )}
-
-          {sheetItem && (
-            <ProgressSheet
-              item={sheetItem}
-              onSave={(amount, minutes, note) =>
-                void handleRegister(sheetItem.id, amount, minutes, note)
-              }
-              onClose={() => setSheetItemId(null)}
-            />
-          )}
-        </>
-      )}
+      {content}
     </div>
   );
 }

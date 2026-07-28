@@ -14,7 +14,7 @@ export function CircularProgressDial({
   strokeWidth = 6,
   showLabel = false,
   label,
-}: CircularProgressDialProps) {
+}: Readonly<CircularProgressDialProps>) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const clampedPct = Math.min(100, Math.max(0, percentage));

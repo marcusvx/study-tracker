@@ -48,7 +48,7 @@ export function DetailView({
   onEdit,
   onPause,
   onArchive,
-}: DetailViewProps) {
+}: Readonly<DetailViewProps>) {
   const { t } = useTranslation();
   const meta = categoryMeta[item.category];
   const { daysLeft, onTrack, etaDate } = calcETA(item);

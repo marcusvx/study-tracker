@@ -8,7 +8,7 @@ export function ProgressBar({
   value,
   max,
   color = 'var(--accent)',
-}: ProgressBarProps) {
+}: Readonly<ProgressBarProps>) {
   const w = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0;
   return (
     <div className="h-1.5 overflow-hidden rounded-full bg-[#262B30]">

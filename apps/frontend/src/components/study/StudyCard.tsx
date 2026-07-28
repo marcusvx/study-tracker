@@ -22,20 +22,21 @@ const rhythmBadge = cva('rounded-full px-2.5 py-1 text-[11px] font-medium', {
   },
 });
 
-export function StudyCard({ item, onRegister, onSelect }: StudyCardProps) {
+export function StudyCard({
+  item,
+  onRegister,
+  onSelect,
+}: Readonly<StudyCardProps>) {
   const { t } = useTranslation();
   const meta = categoryMeta[item.category];
   const { daysLeft, onTrack } = calcETA(item);
   const p = pct(item);
 
-  const tone: 'success' | 'warning' | 'alert' =
-    item.status === 'done'
-      ? 'success'
-      : item.status === 'paused'
-        ? 'warning'
-        : onTrack
-          ? 'success'
-          : 'alert';
+  let tone: 'success' | 'warning' | 'alert';
+  if (item.status === 'done') tone = 'success';
+  else if (item.status === 'paused') tone = 'warning';
+  else if (onTrack) tone = 'success';
+  else tone = 'alert';
 
   let rhythmText: string;
   if (item.status === 'done') rhythmText = t('studyCard.done');
@@ -45,68 +46,71 @@ export function StudyCard({ item, onRegister, onSelect }: StudyCardProps) {
   else rhythmText = t('studyCard.late', { days: daysLeft });
 
   return (
-    <div
-      onClick={onSelect}
-      className="cursor-pointer rounded-lg border border-border bg-surface p-[18px] transition-[border-color,transform] duration-150 hover:border-accent"
-    >
-      {/* Header row */}
-      <div className="mb-3.5 flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          {/* Category badge */}
-          <div className="mb-1.5 flex items-center gap-1.5">
-            {/* meta.color/meta.bg are a runtime lookup keyed by item.category
-                (see categoryMeta.tsx) — not expressible as static Tailwind classes */}
-            <span style={{ color: meta.color }} className="flex">
-              <meta.Icon size={14} />
-            </span>
-            <span
-              style={{ color: meta.color, background: meta.bg }}
-              className="rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide"
-            >
-              {t(meta.labelKey)}
-            </span>
-          </div>
-
-          <div className="text-[15px] font-semibold leading-tight text-text-primary">
-            {item.title}
-          </div>
-          <div className="mt-1 font-mono text-xs text-text-secondary">
-            {item.currentProgress} / {item.totalScope} {item.unit}
-          </div>
-        </div>
-
-        {/* Circular progress dial */}
-        <div className="shrink-0">
-          <CircularProgressDial
-            percentage={p}
-            onTrack={onTrack}
-            size={56}
-            strokeWidth={5}
-          />
-        </div>
-      </div>
-
-      {/* Progress Bar fallback / secondary visual */}
-      <ProgressBar
-        value={item.currentProgress}
-        max={item.totalScope}
-        color={onTrack ? 'var(--accent)' : 'var(--alert)'}
+    <div className="relative rounded-lg border border-border bg-surface p-[18px] transition-[border-color,transform] duration-150 hover:border-accent">
+      <button
+        type="button"
+        onClick={onSelect}
+        aria-label={item.title}
+        className="absolute inset-0 z-0 cursor-pointer rounded-lg"
       />
 
-      {/* Footer row */}
-      <div className="mt-3.5 flex items-center justify-between gap-2">
-        <span className={rhythmBadge({ tone })}>{rhythmText}</span>
-        {item.status !== 'done' && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onRegister();
-            }}
-            className="cursor-pointer whitespace-nowrap rounded-md border-[1.5px] border-accent bg-transparent px-3 py-[5px] text-xs font-semibold text-accent transition-colors duration-150 hover:bg-accent hover:text-ink"
-          >
-            {t('studyCard.register')}
-          </button>
-        )}
+      <div className="pointer-events-none relative z-[1]">
+        {/* Header row */}
+        <div className="mb-3.5 flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            {/* Category badge */}
+            <div className="mb-1.5 flex items-center gap-1.5">
+              {/* meta.color/meta.bg are a runtime lookup keyed by item.category
+                  (see categoryMeta.tsx) — not expressible as static Tailwind classes */}
+              <span style={{ color: meta.color }} className="flex">
+                <meta.Icon size={14} />
+              </span>
+              <span
+                style={{ color: meta.color, background: meta.bg }}
+                className="rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide"
+              >
+                {t(meta.labelKey)}
+              </span>
+            </div>
+
+            <div className="text-[15px] font-semibold leading-tight text-text-primary">
+              {item.title}
+            </div>
+            <div className="mt-1 font-mono text-xs text-text-secondary">
+              {item.currentProgress} / {item.totalScope} {item.unit}
+            </div>
+          </div>
+
+          {/* Circular progress dial */}
+          <div className="shrink-0">
+            <CircularProgressDial
+              percentage={p}
+              onTrack={onTrack}
+              size={56}
+              strokeWidth={5}
+            />
+          </div>
+        </div>
+
+        {/* Progress Bar fallback / secondary visual */}
+        <ProgressBar
+          value={item.currentProgress}
+          max={item.totalScope}
+          color={onTrack ? 'var(--accent)' : 'var(--alert)'}
+        />
+
+        {/* Footer row */}
+        <div className="mt-3.5 flex items-center justify-between gap-2">
+          <span className={rhythmBadge({ tone })}>{rhythmText}</span>
+          {item.status !== 'done' && (
+            <button
+              onClick={onRegister}
+              className="pointer-events-auto relative z-[1] cursor-pointer whitespace-nowrap rounded-md border-[1.5px] border-accent bg-transparent px-3 py-[5px] text-xs font-semibold text-accent transition-colors duration-150 hover:bg-accent hover:text-ink"
+            >
+              {t('studyCard.register')}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

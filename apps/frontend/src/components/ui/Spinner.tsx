@@ -3,7 +3,10 @@ interface SpinnerProps {
   color?: string;
 }
 
-export function Spinner({ size = 18, color = 'currentColor' }: SpinnerProps) {
+export function Spinner({
+  size = 18,
+  color = 'currentColor',
+}: Readonly<SpinnerProps>) {
   return (
     <div
       className="animate-[spin_0.7s_linear_infinite] rounded-full"
