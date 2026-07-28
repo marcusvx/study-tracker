@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { Category, StudyItem, Unit } from '../types/study';
-import { categoryMeta, IconArrowLeft } from '../components/icons/Index';
+import { categoryMeta } from '../components/icons/categoryMeta';
+import { IconArrowLeft } from '../components/icons/IconArrowLeft';
 import { Spinner } from '../components/ui/Spinner';
 
 interface CreateEditViewProps {

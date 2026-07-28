@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FilterTab, StudyItem } from '../types/study';
-import { IconPlus, IconSettings } from '../components/icons/Index';
+import { IconPlus } from '../components/icons/IconPlus';
+import { IconSettings } from '../components/icons/IconSettings';
 import { StudyCard } from '../components/study/StudyCard';
 
 interface DashboardViewProps {

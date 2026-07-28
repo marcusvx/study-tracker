@@ -1,7 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StudyItem } from '../types/study';
-import { IconArrowLeft, IconMoon, IconSun } from '../components/icons/Index';
+import { IconMoon } from '../components/icons/IconMoon';
+import { IconSun } from '../components/icons/IconSun';
+import { IconArrowLeft } from '../components/icons/IconArrowLeft';
 import { supabase } from '../lib/supabaseClient';
 import { useTheme } from '../contexts/ThemeContext';
 

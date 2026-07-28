@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StudyItem } from '../../types/study';
 import { calcETA, pct } from '../../utils/eta';
-import { categoryMeta } from '../icons/Index';
+import { categoryMeta } from '../icons/categoryMeta';
 import { CircularProgressDial } from '../ui/CircularProgressDial';
 import { ProgressBar } from '../ui/ProgressBar';
 
