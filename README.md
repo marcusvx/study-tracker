@@ -13,6 +13,16 @@ A mobile-first full-stack application (PWA/iOS ready) designed to track multiple
 
 ---
 
+## Browser / WebView Support
+
+The frontend uses Tailwind CSS v4, which compiles all output (reset, tokens, utilities) inside native CSS Cascade Layers (`@layer`). Browsers that don't support Cascade Layers discard those blocks entirely, so the app renders as a completely unstyled/blank page rather than degrading gracefully.
+
+- **Minimum requirement:** Chrome/WebView 99+ (Cascade Layers support).
+- **Known issue:** older Android devices running an outdated Android System WebView (e.g. still on Chrome 90) will show a blank white page even though the app installs and loads correctly. This is a WebView version problem, not an app crash — confirm via `chrome://inspect` and checking the WebView version in Settings → Apps → Android System WebView.
+- Supporting older WebViews would require downgrading to Tailwind v3 (no cascade layers, broader compatibility) — currently out of scope.
+
+---
+
 ## Project Structure
 
 ```
