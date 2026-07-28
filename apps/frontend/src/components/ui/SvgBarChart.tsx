@@ -20,7 +20,7 @@ export function SvgBarChart({ data }: SvgBarChartProps) {
       viewBox={`0 0 ${W} ${H}`}
       width="100%"
       height={H}
-      style={{ overflow: 'visible' }}
+      className="overflow-visible"
     >
       {data.map((d, i) => {
         const bh = Math.max(4, (d.progresso / max) * chartH);
@@ -32,7 +32,7 @@ export function SvgBarChart({ data }: SvgBarChartProps) {
             key={i}
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
-            style={{ cursor: 'default' }}
+            className="cursor-default"
           >
             <rect
               x={x - barW / 2}
@@ -41,7 +41,7 @@ export function SvgBarChart({ data }: SvgBarChartProps) {
               height={bh}
               rx={3}
               fill={isHov ? '#F3B458' : 'var(--accent, #E8A33D)'}
-              style={{ transition: 'fill 0.15s' }}
+              className="[transition:fill_0.15s]"
             />
             {isHov && (
               <g>

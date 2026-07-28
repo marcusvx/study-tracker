@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { cva } from 'class-variance-authority';
 import toast from 'react-hot-toast';
 import { Category, StudyItem, Unit } from '../types/study';
 import { categoryMeta } from '../components/icons/categoryMeta';
-import { IconArrowLeft } from '../components/icons/IconArrowLeft';
+import { BackButton } from '../components/ui/BackButton';
+import { Card } from '../components/ui/Card';
 import { Spinner } from '../components/ui/Spinner';
+import { Switch } from '../components/ui/Switch';
 
 interface CreateEditViewProps {
   initial?: StudyItem;
@@ -20,6 +23,32 @@ type FieldErrors = {
   currentProgress?: string;
   sessionMinutes?: string;
 };
+
+const labelClassName =
+  'mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-text-secondary';
+
+const inputClassName =
+  'mb-4 w-full rounded-md border border-border bg-ink px-3.5 py-3 text-[15px] text-text-primary outline-none';
+
+const inputErrorClassName =
+  'mb-1.5 w-full rounded-md border border-alert bg-ink px-3.5 py-3 text-[15px] text-text-primary outline-none';
+
+const errorTextClassName = 'mb-4 -mt-2.5 text-xs text-alert';
+
+// Shared active/inactive look for unit and cadence selector chips.
+// (The category chips have their own per-category runtime colors, so
+// they aren't expressed with this variant.)
+const chipToggle = cva('cursor-pointer border transition-[all] duration-150', {
+  variants: {
+    selected: {
+      true: 'border-[1.5px] border-accent bg-accent-light text-accent',
+      false: 'border-border bg-ink text-[var(--text-secondary)]',
+    },
+  },
+});
+
+const stepperButtonClassName =
+  'flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border border-border bg-ink text-[16px] font-bold text-text-primary';
 
 export function CreateEditView({
   initial,
@@ -110,79 +139,37 @@ export function CreateEditView({
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'var(--bg-base, #14171A)',
-        paddingBottom: 48,
-      }}
-    >
-      <div
-        style={{
-          background: 'var(--surface-card, #1E2226)',
-          borderBottom: '1px solid var(--border, #2D3339)',
-          padding: '20px',
-        }}
-      >
-        <button
-          onClick={onBack}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--text-secondary, #8B929A)',
-            padding: '0 0 16px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            fontSize: 14,
-          }}
-        >
-          <IconArrowLeft size={18} /> {t('common.cancel')}
-        </button>
-        <div
-          style={{
-            fontSize: 20,
-            fontWeight: 700,
-            color: 'var(--text-primary, #EDEEEC)',
-          }}
-        >
+    <div className="min-h-screen bg-base pb-12">
+      <div className="border-b border-border bg-surface p-5">
+        <BackButton onClick={onBack} label={t('common.cancel')} />
+        <div className="text-xl font-bold text-text-primary">
           {initial ? t('createEdit.titleEdit') : t('createEdit.titleNew')}
         </div>
       </div>
 
-      <div
-        style={{
-          padding: '20px 16px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 20,
-        }}
-      >
+      <div className="flex flex-col gap-5 px-4 py-5">
         {/* Title */}
-        <div style={cardStyle}>
-          <label style={labelStyle}>{t('createEdit.fieldTitle')}</label>
+        <Card>
+          <label className={labelClassName}>{t('createEdit.fieldTitle')}</label>
           <input
             value={title}
             onChange={(e) => {
               setTitle(e.target.value);
-              if (errors.title) setErrors((prev) => ({ ...prev, title: undefined }));
+              if (errors.title)
+                setErrors((prev) => ({ ...prev, title: undefined }));
             }}
             placeholder={t('createEdit.titlePlaceholder')}
-            style={errors.title ? inputErrorStyle : inputStyle}
+            className={errors.title ? inputErrorClassName : inputClassName}
           />
-          {errors.title && <div style={errorTextStyle}>{errors.title}</div>}
+          {errors.title && (
+            <div className={errorTextClassName}>{errors.title}</div>
+          )}
 
           {/* Category */}
-          <label style={labelStyle}>{t('createEdit.fieldCategory')}</label>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: 8,
-              marginBottom: 16,
-            }}
-          >
+          <label className={labelClassName}>
+            {t('createEdit.fieldCategory')}
+          </label>
+          <div className="mb-4 grid grid-cols-4 gap-2">
             {(Object.keys(categoryMeta) as Category[]).map((c) => {
               const m = categoryMeta[c];
               const active = category === c;
@@ -191,24 +178,19 @@ export function CreateEditView({
                   key={c}
                   type="button"
                   onClick={() => setCategory(c)}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 6,
-                    padding: '12px 8px',
-                    borderRadius: 8,
-                    cursor: 'pointer',
-                    border: active
-                      ? `2px solid ${m.color}`
-                      : '1px solid var(--border, #2D3339)',
-                    background: active ? m.bg : '#14171A',
-                    color: active ? m.color : 'var(--text-muted, #8B929A)',
-                    transition: 'all 0.15s',
-                  }}
+                  className="flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border border-border bg-ink px-2 py-3 text-text-secondary transition-[all] duration-150"
+                  style={
+                    active
+                      ? {
+                          border: `2px solid ${m.color}`,
+                          background: m.bg,
+                          color: m.color,
+                        } // per-category runtime color from categoryMeta
+                      : undefined
+                  }
                 >
                   <m.Icon size={20} />
-                  <span style={{ fontSize: 10, fontWeight: 600 }}>
+                  <span className="text-[10px] font-semibold">
                     {t(m.labelKey)}
                   </span>
                 </button>
@@ -217,52 +199,26 @@ export function CreateEditView({
           </div>
 
           {/* Unit */}
-          <label style={labelStyle}>{t('createEdit.fieldUnit')}</label>
-          <div
-            style={{
-              display: 'flex',
-              gap: 6,
-              marginBottom: 16,
-              flexWrap: 'wrap',
-            }}
-          >
+          <label className={labelClassName}>{t('createEdit.fieldUnit')}</label>
+          <div className="mb-4 flex flex-wrap gap-1.5">
             {units.map((u) => (
               <button
                 key={u}
                 type="button"
                 onClick={() => setUnit(u)}
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  padding: '7px 14px',
-                  borderRadius: 6,
-                  cursor: 'pointer',
-                  border:
-                    unit === u
-                      ? '1.5px solid var(--accent, #E8A33D)'
-                      : '1px solid var(--border, #2D3339)',
-                  background:
-                    unit === u ? 'rgba(232, 163, 61, 0.12)' : '#14171A',
-                  color:
-                    unit === u
-                      ? 'var(--accent, #E8A33D)'
-                      : 'var(--text-secondary, #8B929A)',
-                  transition: 'all 0.15s',
-                }}
+                className={`rounded-md px-3.5 py-[7px] text-xs font-semibold ${chipToggle({ selected: unit === u })}`}
               >
                 {unitLabels[u]}
               </button>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Scope */}
-        <div style={cardStyle}>
-          <div
-            style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}
-          >
+        <Card>
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label style={labelStyle}>
+              <label className={labelClassName}>
                 {t('createEdit.fieldTotalScope')}
               </label>
               <input
@@ -274,14 +230,16 @@ export function CreateEditView({
                     setErrors((prev) => ({ ...prev, totalScope: undefined }));
                 }}
                 placeholder={t('createEdit.totalScopePlaceholder')}
-                style={errors.totalScope ? inputErrorStyle : inputStyle}
+                className={
+                  errors.totalScope ? inputErrorClassName : inputClassName
+                }
               />
               {errors.totalScope && (
-                <div style={errorTextStyle}>{errors.totalScope}</div>
+                <div className={errorTextClassName}>{errors.totalScope}</div>
               )}
             </div>
             <div>
-              <label style={labelStyle}>
+              <label className={labelClassName}>
                 {t('createEdit.fieldCurrentProgress')}
               </label>
               <input
@@ -296,65 +254,43 @@ export function CreateEditView({
                     }));
                 }}
                 placeholder="0"
-                style={errors.currentProgress ? inputErrorStyle : inputStyle}
+                className={
+                  errors.currentProgress ? inputErrorClassName : inputClassName
+                }
               />
               {errors.currentProgress && (
-                <div style={errorTextStyle}>{errors.currentProgress}</div>
+                <div className={errorTextClassName}>
+                  {errors.currentProgress}
+                </div>
               )}
             </div>
           </div>
-          <label style={labelStyle}>
+          <label className={labelClassName}>
             {t('createEdit.fieldDeadline')}{' '}
-            <span style={{ color: 'var(--text-muted, #8B929A)' }}>
-              {t('common.optional')}
-            </span>
+            <span className="text-text-secondary">{t('common.optional')}</span>
           </label>
           <input
             type="date"
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
-            style={inputStyle}
+            className={inputClassName}
           />
-        </div>
+        </Card>
 
         {/* Cadence */}
-        <div style={cardStyle}>
-          <label style={labelStyle}>{t('createEdit.fieldCadence')}</label>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              marginBottom: 16,
-            }}
-          >
+        <Card>
+          <label className={labelClassName}>
+            {t('createEdit.fieldCadence')}
+          </label>
+          <div className="mb-4 flex items-center gap-3">
             <button
               type="button"
               onClick={() => setCadenceDays(1)}
-              style={{
-                flex: 1,
-                padding: '10px',
-                borderRadius: 6,
-                cursor: 'pointer',
-                fontSize: 13,
-                fontWeight: 600,
-                border:
-                  cadenceDays === 1
-                    ? '1.5px solid var(--accent, #E8A33D)'
-                    : '1px solid var(--border, #2D3339)',
-                background:
-                  cadenceDays === 1 ? 'rgba(232, 163, 61, 0.12)' : '#14171A',
-                color:
-                  cadenceDays === 1
-                    ? 'var(--accent, #E8A33D)'
-                    : 'var(--text-secondary, #8B929A)',
-              }}
+              className={`flex-1 rounded-md p-2.5 text-[13px] font-semibold ${chipToggle({ selected: cadenceDays === 1 })}`}
             >
               {t('createEdit.daily')}
             </button>
-            <div
-              style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 2 }}
-            >
+            <div className="flex flex-[2] items-center gap-2">
               <button
                 type="button"
                 onClick={() =>
@@ -362,60 +298,30 @@ export function CreateEditView({
                     Math.max(2, cadenceDays === 1 ? 2 : cadenceDays),
                   )
                 }
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  borderRadius: 6,
-                  cursor: 'pointer',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  border:
-                    cadenceDays > 1
-                      ? '1.5px solid var(--accent, #E8A33D)'
-                      : '1px solid var(--border, #2D3339)',
-                  background:
-                    cadenceDays > 1 ? 'rgba(232, 163, 61, 0.12)' : '#14171A',
-                  color:
-                    cadenceDays > 1
-                      ? 'var(--accent, #E8A33D)'
-                      : 'var(--text-secondary, #8B929A)',
-                }}
+                className={`flex-1 rounded-md p-2.5 text-[13px] font-semibold ${chipToggle({ selected: cadenceDays > 1 })}`}
               >
                 {t('createEdit.every')}
               </button>
               {cadenceDays > 1 && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div className="flex items-center gap-1.5">
                   <button
                     type="button"
                     onClick={() => setCadenceDays(Math.max(2, cadenceDays - 1))}
-                    style={stepperBtn}
+                    className={stepperButtonClassName}
                   >
                     –
                   </button>
-                  <span
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 700,
-                      minWidth: 24,
-                      textAlign: 'center',
-                      fontFamily: "'JetBrains Mono', monospace",
-                    }}
-                  >
+                  <span className="min-w-6 text-center font-mono text-[16px] font-bold">
                     {cadenceDays}
                   </span>
                   <button
                     type="button"
                     onClick={() => setCadenceDays(cadenceDays + 1)}
-                    style={stepperBtn}
+                    className={stepperButtonClassName}
                   >
                     +
                   </button>
-                  <span
-                    style={{
-                      fontSize: 13,
-                      color: 'var(--text-muted, #8B929A)',
-                    }}
-                  >
+                  <span className="text-[13px] text-text-secondary">
                     {t('createEdit.days')}
                   </span>
                 </div>
@@ -423,7 +329,7 @@ export function CreateEditView({
             </div>
           </div>
 
-          <label style={labelStyle}>
+          <label className={labelClassName}>
             {t('createEdit.fieldSessionMinutes')}
           </label>
           <input
@@ -435,88 +341,43 @@ export function CreateEditView({
                 setErrors((prev) => ({ ...prev, sessionMinutes: undefined }));
             }}
             placeholder="30"
-            style={errors.sessionMinutes ? inputErrorStyle : inputStyle}
+            className={
+              errors.sessionMinutes ? inputErrorClassName : inputClassName
+            }
           />
           {errors.sessionMinutes && (
-            <div style={errorTextStyle}>{errors.sessionMinutes}</div>
+            <div className={errorTextClassName}>{errors.sessionMinutes}</div>
           )}
 
-          <label style={labelStyle}>
+          <label className={labelClassName}>
             {t('createEdit.fieldReminderTime')}
           </label>
           <input
             type="time"
             value={reminderTime}
             onChange={(e) => setReminderTime(e.target.value)}
-            style={inputStyle}
+            className={inputClassName}
           />
 
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginTop: 8,
-            }}
-          >
-            <span
-              style={{
-                fontSize: 14,
-                fontWeight: 500,
-                color: 'var(--text-primary, #EDEEEC)',
-              }}
-            >
+          <div className="mt-2 flex items-center justify-between">
+            <span className="text-sm font-medium text-text-primary">
               {t('createEdit.notifications')}
             </span>
-            <div
-              onClick={() => setNotificationsOn(!notificationsOn)}
-              style={{
-                width: 44,
-                height: 24,
-                borderRadius: 99,
-                cursor: 'pointer',
-                position: 'relative',
-                transition: 'background 0.2s',
-                background: notificationsOn
-                  ? 'var(--accent, #E8A33D)'
-                  : '#2D3339',
-              }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 3,
-                  left: notificationsOn ? 23 : 3,
-                  width: 18,
-                  height: 18,
-                  borderRadius: '50%',
-                  background: '#EDEEEC',
-                  transition: 'left 0.2s',
-                }}
-              />
-            </div>
+            <Switch
+              checked={notificationsOn}
+              onChange={() => setNotificationsOn(!notificationsOn)}
+            />
           </div>
-        </div>
+        </Card>
 
         <button
           onClick={() => void handleSave()}
           disabled={isSaving}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 10,
-            background: 'var(--accent, #E8A33D)',
-            color: '#14171A',
-            border: 'none',
-            borderRadius: 6,
-            padding: '16px',
-            fontSize: 16,
-            fontWeight: 700,
-            cursor: isSaving ? 'default' : 'pointer',
-            opacity: isSaving ? 0.7 : 1,
-            width: '100%',
-          }}
+          className={`flex w-full items-center justify-center gap-2.5 rounded-md border-none bg-accent p-4 text-[16px] font-bold text-ink ${
+            isSaving
+              ? 'cursor-default opacity-70'
+              : 'cursor-pointer opacity-100'
+          }`}
         >
           {isSaving && <Spinner size={18} color="#14171A" />}
           {submitLabel}
@@ -525,61 +386,3 @@ export function CreateEditView({
     </div>
   );
 }
-
-const cardStyle: React.CSSProperties = {
-  background: 'var(--surface-card, #1E2226)',
-  border: '1px solid var(--border, #2D3339)',
-  borderRadius: 8,
-  padding: '18px',
-};
-
-const labelStyle: React.CSSProperties = {
-  display: 'block',
-  fontSize: 11,
-  fontWeight: 600,
-  color: 'var(--text-muted, #8B929A)',
-  marginBottom: 6,
-  letterSpacing: '0.05em',
-  textTransform: 'uppercase',
-};
-
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  border: '1px solid var(--border, #2D3339)',
-  borderRadius: 6,
-  padding: '12px 14px',
-  fontSize: 15,
-  color: 'var(--text-primary, #EDEEEC)',
-  background: '#14171A',
-  marginBottom: 16,
-  outline: 'none',
-  fontFamily: 'inherit',
-};
-
-const inputErrorStyle: React.CSSProperties = {
-  ...inputStyle,
-  border: '1px solid var(--alert, #C9694F)',
-  marginBottom: 6,
-};
-
-const errorTextStyle: React.CSSProperties = {
-  fontSize: 12,
-  color: 'var(--alert, #C9694F)',
-  marginTop: -10,
-  marginBottom: 16,
-};
-
-const stepperBtn: React.CSSProperties = {
-  width: 28,
-  height: 28,
-  borderRadius: 6,
-  border: '1px solid var(--border, #2D3339)',
-  background: '#14171A',
-  color: 'var(--text-primary, #EDEEEC)',
-  cursor: 'pointer',
-  fontSize: 16,
-  fontWeight: 700,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};

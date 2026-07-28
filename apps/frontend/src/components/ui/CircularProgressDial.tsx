@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface CircularProgressDialProps {
   percentage: number;
   onTrack?: boolean;
@@ -30,20 +28,14 @@ export function CircularProgressDial({
 
   return (
     <div
-      style={{
-        position: 'relative',
-        width: size,
-        height: size,
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+      className="relative inline-flex items-center justify-center"
+      style={{ width: size, height: size }} // size is a runtime prop
     >
       <svg
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
-        style={{ transform: 'rotate(-90deg)' }}
+        className="-rotate-90"
       >
         {/* Background Track */}
         <circle
@@ -65,43 +57,18 @@ export function CircularProgressDial({
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
-          style={{
-            transition: 'stroke-dashoffset 0.5s ease, stroke 0.3s ease',
-          }}
+          className="[transition:stroke-dashoffset_0.5s_ease,stroke_0.3s_ease]"
         />
       </svg>
       {/* Needle indicator / Center value */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span
-          style={{
-            fontFamily: "'JetBrains Mono', 'DM Mono', monospace",
-            fontSize: size > 90 ? 24 : 14,
-            fontWeight: 700,
-            color: 'var(--text-primary, #EDEEEC)',
-            lineHeight: 1,
-          }}
+          className={`font-mono font-bold leading-none text-text-primary ${size > 90 ? 'text-2xl' : 'text-sm'}`}
         >
           {clampedPct}%
         </span>
         {showLabel && label && (
-          <span
-            style={{
-              fontSize: 10,
-              color: 'var(--text-muted, #8B929A)',
-              marginTop: 2,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-            }}
-          >
+          <span className="mt-0.5 text-[10px] uppercase tracking-wider text-text-secondary">
             {label}
           </span>
         )}

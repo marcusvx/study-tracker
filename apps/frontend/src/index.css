@@ -12,6 +12,12 @@
   --accent-light: rgba(232, 163, 61, 0.12);
   --alert: #C9694F;
   --alert-light: rgba(201, 105, 79, 0.12);
+  /* Status colors for StudyCard rhythm badge; kept identical across themes
+     to preserve existing behavior (previously hardcoded, theme-agnostic). */
+  --success: #34D399;
+  --success-light: rgba(52, 211, 153, 0.12);
+  --warning: #FBBF24;
+  --warning-light: rgba(251, 191, 36, 0.12);
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
@@ -27,11 +33,55 @@
   --accent-light: rgba(194, 129, 43, 0.12);
   --alert: #B5563D;
   --alert-light: rgba(181, 86, 61, 0.12);
+  --success: #34D399;
+  --success-light: rgba(52, 211, 153, 0.12);
+  --warning: #FBBF24;
+  --warning-light: rgba(251, 191, 36, 0.12);
+}
+
+@theme {
+  /* Design tokens as Tailwind utilities (bg-surface, text-text-primary, etc).
+     Each resolves through the CSS vars above so light/dark theme switching
+     (driven by the [data-theme] attribute) keeps working unchanged. */
+  --color-surface: var(--surface-card);
+  --color-border: var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-alert: var(--alert);
+  --color-alert-light: var(--alert-light);
+  --color-success: var(--success);
+  --color-success-light: var(--success-light);
+  --color-warning: var(--warning);
+  --color-warning-light: var(--warning-light);
+
+  /* Page background — theme-aware, switches with var(--bg-base). */
+  --color-base: var(--bg-base);
+
+  /* Static (theme-independent) dark tone used for input backgrounds and
+     text on accent-colored surfaces, in both themes — distinct from
+     --color-base above because these spots were hardcoded to the literal
+     hex (no var() wrapper) in the original inline styles, i.e. they were
+     never theme-aware to begin with. Named separately from --color-base
+     so `bg-ink`/`text-ink` don't accidentally start tracking theme.
+     (Also sidesteps `text-base` colliding with Tailwind's built-in
+     font-size utility of the same name.) */
+  --color-ink: #14171A;
 }
 
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
   }
 }
 

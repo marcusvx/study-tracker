@@ -1,9 +1,10 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { cva } from 'class-variance-authority';
 import { StudyItem } from '../types/study';
 import { calcETA, formatDate, pct } from '../utils/eta';
 import { categoryMeta } from '../components/icons/categoryMeta';
-import { IconArrowLeft } from '../components/icons/IconArrowLeft';
+import { BackButton } from '../components/ui/BackButton';
+import { Card } from '../components/ui/Card';
 import { CircularProgressDial } from '../components/ui/CircularProgressDial';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { SvgBarChart } from '../components/ui/SvgBarChart';
@@ -16,6 +17,29 @@ interface DetailViewProps {
   onPause: () => void;
   onArchive: () => void;
 }
+
+const sectionLabelClassName =
+  'text-[11px] font-semibold tracking-wider text-text-secondary';
+
+const actionButton = cva(
+  'cursor-pointer rounded-md px-4 py-[13px] text-sm font-semibold transition-opacity duration-150',
+  {
+    variants: {
+      intent: {
+        primary: 'flex-1 border-none bg-accent text-ink',
+        // Real --text-secondary var (not --text-muted); left unmapped to a
+        // named token per design decision, referenced directly instead.
+        secondary:
+          'flex-1 border border-border bg-transparent text-[var(--text-secondary)]',
+        // Border color is a literal (non-var) rgba in the original inline
+        // style, so it's theme-independent — kept as an arbitrary value
+        // rather than the theme-tracking `border-alert` token.
+        danger:
+          'border border-[rgba(201,105,79,0.4)] bg-transparent text-alert',
+      },
+    },
+  },
+);
 
 export function DetailView({
   item,
@@ -36,120 +60,39 @@ export function DetailView({
   }));
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'var(--bg-base, #14171A)',
-        paddingBottom: 32,
-      }}
-    >
+    <div className="min-h-screen bg-base pb-8">
       {/* Header */}
-      <div
-        style={{
-          background: 'var(--surface-card, #1E2226)',
-          borderBottom: '1px solid var(--border, #2D3339)',
-          padding: '20px',
-        }}
-      >
-        <button
-          onClick={onBack}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--text-secondary, #8B929A)',
-            padding: '0 0 16px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            fontSize: 14,
-          }}
-        >
-          <IconArrowLeft size={18} /> {t('common.back')}
-        </button>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            marginBottom: 8,
-          }}
-        >
+      <div className="border-b border-border bg-surface p-5">
+        <BackButton onClick={onBack} label={t('common.back')} />
+        <div className="mb-2 flex items-center gap-2">
+          {/* meta.color/meta.bg are a runtime lookup keyed by item.category */}
           <span style={{ color: meta.color }}>
             <meta.Icon size={16} />
           </span>
           <span
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: meta.color,
-              background: meta.bg,
-              padding: '2px 8px',
-              borderRadius: 99,
-              textTransform: 'uppercase',
-            }}
+            style={{ color: meta.color, background: meta.bg }}
+            className="rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase"
           >
             {t(meta.labelKey)}
           </span>
         </div>
-        <div
-          style={{
-            fontSize: 20,
-            fontWeight: 700,
-            lineHeight: 1.2,
-            marginBottom: 6,
-            color: 'var(--text-primary, #EDEEEC)',
-          }}
-        >
+        <div className="mb-1.5 text-xl font-bold leading-[1.2] text-text-primary">
           {item.title}
         </div>
-        <div
-          style={{
-            fontSize: 13,
-            color: 'var(--text-muted, #8B929A)',
-            fontFamily: "'JetBrains Mono', monospace",
-          }}
-        >
+        <div className="font-mono text-[13px] text-text-secondary">
           {item.currentProgress} / {item.totalScope} {item.unit}
         </div>
       </div>
 
-      <div
-        style={{
-          padding: '20px 16px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 16,
-        }}
-      >
+      <div className="flex flex-col gap-4 px-4 py-5">
         {/* Signature Circular Dial Progress Card */}
-        <div style={cardStyle}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 14,
-            }}
-          >
+        <Card>
+          <div className="mb-3.5 flex items-center justify-between">
             <div>
-              <div
-                style={{
-                  fontSize: 11,
-                  color: 'var(--text-muted, #8B929A)',
-                  fontWeight: 600,
-                  letterSpacing: '0.05em',
-                }}
-              >
+              <div className="text-[11px] font-semibold tracking-wider text-text-secondary">
                 {t('detail.progressPanel')}
               </div>
-              <div
-                style={{
-                  fontSize: 13,
-                  color: 'var(--text-secondary, #8B929A)',
-                  marginTop: 4,
-                }}
-              >
+              <div className="mt-1 text-[13px] text-[var(--text-secondary)]">
                 {t('detail.progressPanelSub', {
                   current: item.currentProgress,
                   total: item.totalScope,
@@ -177,138 +120,70 @@ export function DetailView({
           {item.status === 'active' && (
             <button
               onClick={onRegister}
-              style={{
-                width: '100%',
-                background: 'var(--accent, #E8A33D)',
-                color: '#14171A',
-                border: 'none',
-                borderRadius: 6,
-                padding: '12px',
-                fontSize: 14,
-                fontWeight: 700,
-                cursor: 'pointer',
-                marginTop: 16,
-              }}
+              className="mt-4 w-full cursor-pointer rounded-md border-none bg-accent p-3 text-sm font-bold text-ink"
             >
               {t('detail.registerProgress')}
             </button>
           )}
-        </div>
+        </Card>
 
         {/* ETA card */}
         {item.status !== 'done' && (
-          <div
-            style={{
-              ...cardStyle,
-              borderLeft: `4px solid ${onTrack ? '#34D399' : 'var(--alert, #C9694F)'}`,
-            }}
+          <Card
+            className={`border-l-4 ${onTrack ? 'border-l-success' : 'border-l-alert'}`}
           >
-            <div
-              style={{
-                fontSize: 11,
-                color: 'var(--text-muted, #8B929A)',
-                fontWeight: 600,
-                marginBottom: 8,
-                letterSpacing: '0.05em',
-              }}
-            >
+            <div className={`${sectionLabelClassName} mb-2`}>
               {t('detail.etaTitle')}
             </div>
-            <div style={{ display: 'flex', gap: 24 }}>
+            <div className="flex gap-6">
               <div>
-                <div
-                  style={{ fontSize: 11, color: 'var(--text-muted, #8B929A)' }}
-                >
+                <div className="text-[11px] text-text-secondary">
                   {t('detail.etaCurrent')}
                 </div>
                 <div
-                  style={{
-                    fontSize: 18,
-                    fontWeight: 700,
-                    color: onTrack ? '#34D399' : 'var(--alert, #C9694F)',
-                    fontFamily: "'JetBrains Mono', monospace",
-                  }}
+                  className={`font-mono text-lg font-bold ${onTrack ? 'text-success' : 'text-alert'}`}
                 >
                   {daysLeft === Infinity ? '–' : formatDate(etaDate)}
                 </div>
               </div>
               {item.deadline && (
                 <div>
-                  <div
-                    style={{
-                      fontSize: 11,
-                      color: 'var(--text-muted, #8B929A)',
-                    }}
-                  >
+                  <div className="text-[11px] text-text-secondary">
                     {t('detail.etaOriginalGoal')}
                   </div>
-                  <div
-                    style={{
-                      fontSize: 18,
-                      fontWeight: 700,
-                      color: 'var(--text-primary, #EDEEEC)',
-                      fontFamily: "'JetBrains Mono', monospace",
-                    }}
-                  >
+                  <div className="font-mono text-lg font-bold text-text-primary">
                     {formatDate(new Date(item.deadline))}
                   </div>
                 </div>
               )}
               <div>
-                <div
-                  style={{ fontSize: 11, color: 'var(--text-muted, #8B929A)' }}
-                >
+                <div className="text-[11px] text-text-secondary">
                   {t('detail.etaDaysLeft')}
                 </div>
-                <div
-                  style={{
-                    fontSize: 18,
-                    fontWeight: 700,
-                    color: 'var(--text-primary, #EDEEEC)',
-                    fontFamily: "'JetBrains Mono', monospace",
-                  }}
-                >
+                <div className="font-mono text-lg font-bold text-text-primary">
                   {daysLeft === Infinity ? '–' : daysLeft}
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Chart */}
         {chartData.length > 0 && (
-          <div style={cardStyle}>
-            <div
-              style={{
-                fontSize: 11,
-                color: 'var(--text-muted, #8B929A)',
-                fontWeight: 600,
-                marginBottom: 16,
-                letterSpacing: '0.05em',
-              }}
-            >
+          <Card>
+            <div className={`${sectionLabelClassName} mb-4`}>
               {t('detail.chartHistoryTitle')}
             </div>
             <SvgBarChart data={chartData} />
-          </div>
+          </Card>
         )}
 
         {/* Config */}
-        <div style={cardStyle}>
-          <div
-            style={{
-              fontSize: 11,
-              color: 'var(--text-muted, #8B929A)',
-              fontWeight: 600,
-              marginBottom: 12,
-              letterSpacing: '0.05em',
-            }}
-          >
+        <Card>
+          <div className={`${sectionLabelClassName} mb-3`}>
             {t('detail.paramsTitle')}
           </div>
-          <div
-            style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}
-          >
+          <div className="grid grid-cols-2 gap-3">
             {[
               {
                 label: t('detail.cadence'),
@@ -332,131 +207,70 @@ export function DetailView({
               },
             ].map((r) => (
               <div key={r.label}>
-                <div
-                  style={{ fontSize: 11, color: 'var(--text-muted, #8B929A)' }}
-                >
-                  {r.label}
-                </div>
-                <div
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    fontFamily: "'JetBrains Mono', monospace",
-                    marginTop: 2,
-                    color: 'var(--text-primary)',
-                  }}
-                >
+                <div className="text-[11px] text-text-secondary">{r.label}</div>
+                <div className="mt-0.5 font-mono text-sm font-semibold text-text-primary">
                   {r.value}
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Log History */}
         {item.log.length > 0 && (
-          <div style={cardStyle}>
-            <div
-              style={{
-                fontSize: 11,
-                color: 'var(--text-muted, #8B929A)',
-                fontWeight: 600,
-                marginBottom: 12,
-                letterSpacing: '0.05em',
-              }}
-            >
+          <Card>
+            <div className={`${sectionLabelClassName} mb-3`}>
               {t('detail.logHistoryTitle')}
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <div className="flex flex-col gap-px">
               {[...item.log].reverse().map((l, i) => (
                 <div
                   key={i}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    padding: '10px 0',
-                    borderBottom:
-                      i < item.log.length - 1
-                        ? '1px solid var(--border, #2D3339)'
-                        : 'none',
-                  }}
+                  className={`flex justify-between py-2.5 ${
+                    i < item.log.length - 1 ? 'border-b border-border' : ''
+                  }`}
                 >
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 500 }}>
+                    <div className="text-[13px] font-medium">
                       {l.date.slice(5).replace('-', '/')}
                     </div>
                     {l.note && (
-                      <div
-                        style={{
-                          fontSize: 11,
-                          color: 'var(--text-muted, #8B929A)',
-                          marginTop: 2,
-                        }}
-                      >
+                      <div className="mt-0.5 text-[11px] text-text-secondary">
                         {l.note}
                       </div>
                     )}
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 600,
-                        color: 'var(--accent, #E8A33D)',
-                        fontFamily: "'JetBrains Mono', monospace",
-                      }}
-                    >
+                  <div className="text-right">
+                    <div className="font-mono text-[13px] font-semibold text-accent">
                       +{l.amount} {item.unit}
                     </div>
-                    <div
-                      style={{
-                        fontSize: 11,
-                        color: 'var(--text-muted, #8B929A)',
-                      }}
-                    >
+                    <div className="text-[11px] text-text-secondary">
                       {l.minutes} min
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Actions */}
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div className="flex gap-2">
           <button
             onClick={onEdit}
-            style={{
-              ...actionBtn,
-              flex: 1,
-              background: 'var(--accent, #E8A33D)',
-              color: '#14171A',
-              border: 'none',
-            }}
+            className={actionButton({ intent: 'primary' })}
           >
             {t('detail.edit')}
           </button>
           <button
             onClick={onPause}
-            style={{
-              ...actionBtn,
-              flex: 1,
-              background: 'transparent',
-              color: 'var(--text-secondary, #8B929A)',
-              border: '1px solid var(--border, #2D3339)',
-            }}
+            className={actionButton({ intent: 'secondary' })}
           >
             {item.status === 'paused' ? t('detail.resume') : t('detail.pause')}
           </button>
           <button
             onClick={onArchive}
-            style={{
-              ...actionBtn,
-              background: 'transparent',
-              color: 'var(--alert, #C9694F)',
-              border: '1px solid rgba(201, 105, 79, 0.4)',
-            }}
+            className={actionButton({ intent: 'danger' })}
           >
             {t('detail.archive')}
           </button>
@@ -465,19 +279,3 @@ export function DetailView({
     </div>
   );
 }
-
-const cardStyle: React.CSSProperties = {
-  background: 'var(--surface-card, #1E2226)',
-  border: '1px solid var(--border, #2D3339)',
-  borderRadius: 8,
-  padding: '18px',
-};
-
-const actionBtn: React.CSSProperties = {
-  padding: '13px 16px',
-  borderRadius: 6,
-  fontSize: 14,
-  fontWeight: 600,
-  cursor: 'pointer',
-  transition: 'opacity 0.15s',
-};

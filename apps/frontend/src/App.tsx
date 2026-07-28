@@ -8,7 +8,7 @@ import { DetailView } from './views/DetailView';
 import { CreateEditView } from './views/CreateEditView';
 import { SettingsView } from './views/SettingsView';
 import { LoginView } from './views/LoginView';
-import { ProgressSheet } from './components/study/ProgressSheet';
+import { ProgressSheet } from './components/features/study/ProgressSheet';
 import { Spinner } from './components/ui/Spinner';
 import { supabase } from './lib/supabaseClient';
 import {

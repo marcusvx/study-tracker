@@ -41,118 +41,48 @@ export function DashboardView({
   const activeCount = items.filter((i) => i.status === 'active').length;
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'var(--bg-base, #14171A)',
-        paddingBottom: 100,
-      }}
-    >
+    <div className="min-h-screen bg-base pb-[100px]">
       {/* Top bar */}
-      <div
-        style={{
-          background: 'var(--surface-card, #1E2226)',
-          borderBottom: '1px solid var(--border, #2D3339)',
-          padding: '20px 20px 0',
-          position: 'sticky',
-          top: 0,
-          zIndex: 10,
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 16,
-          }}
-        >
+      <div className="sticky top-0 z-10 border-b border-border bg-surface px-5 pt-5">
+        <div className="mb-4 flex items-center justify-between">
           <div>
-            <div
-              style={{
-                fontSize: 20,
-                fontWeight: 700,
-                letterSpacing: '-0.02em',
-                fontFamily: "'JetBrains Mono', monospace",
-                color: 'var(--text-primary, #EDEEEC)',
-              }}
-            >
+            <div className="font-mono text-xl font-bold tracking-[-0.02em] text-text-primary">
               {t('common.appName')}
             </div>
-            <div
-              style={{
-                fontSize: 12,
-                color: 'var(--text-muted, #8B929A)',
-                marginTop: 2,
-              }}
-            >
+            <div className="mt-0.5 text-xs text-text-secondary">
               {t('dashboard.activeCount', { count: activeCount })}
             </div>
           </div>
           <button
             onClick={onSettings}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--text-secondary, #8B929A)',
-              padding: 6,
-              borderRadius: 6,
-            }}
+            className="cursor-pointer rounded-md border-none bg-transparent p-1.5 text-text-secondary"
           >
             <IconSettings />
           </button>
         </div>
 
         {/* Filter tabs */}
-        <div style={{ display: 'flex', gap: 4 }}>
-          {tabs.map((t) => (
+        <div className="flex gap-1">
+          {tabs.map((tab) => (
             <button
-              key={t.key}
-              onClick={() => setFilter(t.key)}
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                padding: '8px 14px',
-                border: 'none',
-                background: 'none',
-                cursor: 'pointer',
-                borderBottom:
-                  filter === t.key
-                    ? '2px solid var(--accent, #E8A33D)'
-                    : '2px solid transparent',
-                color:
-                  filter === t.key
-                    ? 'var(--accent, #E8A33D)'
-                    : 'var(--text-secondary, #8B929A)',
-                borderRadius: '4px 4px 0 0',
-                transition: 'color 0.15s',
-              }}
+              key={tab.key}
+              onClick={() => setFilter(tab.key)}
+              className={`cursor-pointer rounded-t border-none bg-transparent px-3.5 py-2 text-[13px] font-semibold transition-colors duration-150 ${
+                filter === tab.key
+                  ? 'border-b-2 border-accent text-accent'
+                  : 'border-b-2 border-transparent text-text-secondary'
+              }`}
             >
-              {t.label}
+              {tab.label}
             </button>
           ))}
         </div>
       </div>
 
       {/* Card list */}
-      <div
-        style={{
-          padding: '20px 16px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 12,
-        }}
-      >
+      <div className="flex flex-col gap-3 px-4 py-5">
         {filtered.length === 0 && (
-          <div
-            style={{
-              textAlign: 'center',
-              color: 'var(--text-muted, #8B929A)',
-              padding: '40px 0',
-              fontSize: 14,
-            }}
-          >
+          <div className="py-10 text-center text-sm text-text-secondary">
             {t('dashboard.emptyList')}
           </div>
         )}
@@ -169,26 +99,7 @@ export function DashboardView({
       {/* FAB */}
       <button
         onClick={onNew}
-        style={{
-          position: 'fixed',
-          bottom: 28,
-          right: 20,
-          width: 54,
-          height: 54,
-          borderRadius: '50%',
-          background: 'var(--accent, #E8A33D)',
-          border: 'none',
-          color: '#14171A',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 4px 20px rgba(232, 163, 61, 0.25)',
-          transition: 'transform 0.15s',
-          zIndex: 20,
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.06)')}
-        onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+        className="fixed bottom-7 right-5 z-20 flex h-[54px] w-[54px] cursor-pointer items-center justify-center rounded-full border-none bg-accent text-ink shadow-[0_4px_20px_rgba(232,163,61,0.25)] transition-transform duration-150 hover:scale-[1.06]"
       >
         <IconPlus size={24} />
       </button>

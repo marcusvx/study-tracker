@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabaseClient';
 
+const inputClassName =
+  'rounded-md border border-border bg-base p-3 text-sm text-text-primary';
+
 export function LoginView() {
   const { t } = useTranslation();
   const [mode, setMode] = useState<'sign-in' | 'sign-up'>('sign-in');
@@ -31,50 +34,18 @@ export function LoginView() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: 'var(--bg-base, #14171A)',
-        padding: 24,
-      }}
-    >
-      <div
-        style={{
-          width: '100%',
-          maxWidth: 360,
-          background: 'var(--surface-card, #1E2226)',
-          border: '1px solid var(--border, #2D3339)',
-          borderRadius: 8,
-          padding: 24,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 20,
-            fontWeight: 700,
-            color: 'var(--text-primary, #EDEEEC)',
-            marginBottom: 4,
-          }}
-        >
+    <div className="flex min-h-screen flex-col items-center justify-center bg-base p-6">
+      <div className="w-full max-w-[360px] rounded-lg border border-border bg-surface p-6">
+        <div className="mb-1 text-xl font-bold text-text-primary">
           Study Tracker
         </div>
-        <div
-          style={{
-            fontSize: 13,
-            color: 'var(--text-secondary, #8B929A)',
-            marginBottom: 20,
-          }}
-        >
+        <div className="mb-5 text-[13px] text-text-secondary">
           {mode === 'sign-in' ? 'Entre na sua conta' : 'Crie sua conta'}
         </div>
 
         <form
           onSubmit={(e) => void handleSubmit(e)}
-          style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
+          className="flex flex-col gap-3"
         >
           <input
             type="email"
@@ -82,7 +53,7 @@ export function LoginView() {
             placeholder="E-mail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            style={inputStyle}
+            className={inputClassName}
           />
           <input
             type="password"
@@ -91,30 +62,20 @@ export function LoginView() {
             placeholder="Senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            style={inputStyle}
+            className={inputClassName}
           />
 
-          {error && (
-            <div style={{ fontSize: 13, color: '#F87171' }}>{error}</div>
-          )}
-          {message && (
-            <div style={{ fontSize: 13, color: '#34D399' }}>{message}</div>
-          )}
+          {error && <div className="text-[13px] text-[#F87171]">{error}</div>}
+          {message && <div className="text-[13px] text-success">{message}</div>}
 
           <button
             type="submit"
             disabled={loading}
-            style={{
-              background: 'var(--accent, #E8A33D)',
-              color: '#14171A',
-              border: 'none',
-              borderRadius: 6,
-              padding: '13px',
-              fontSize: 14,
-              fontWeight: 700,
-              cursor: loading ? 'default' : 'pointer',
-              opacity: loading ? 0.7 : 1,
-            }}
+            className={`rounded-md border-none bg-accent p-[13px] text-sm font-bold text-ink ${
+              loading
+                ? 'cursor-default opacity-70'
+                : 'cursor-pointer opacity-100'
+            }`}
           >
             {mode === 'sign-in' ? 'Entrar' : 'Criar conta'}
           </button>
@@ -126,15 +87,7 @@ export function LoginView() {
             setError(null);
             setMessage(null);
           }}
-          style={{
-            background: 'none',
-            border: 'none',
-            marginTop: 16,
-            width: '100%',
-            color: 'var(--text-secondary, #8B929A)',
-            fontSize: 13,
-            cursor: 'pointer',
-          }}
+          className="mt-4 w-full cursor-pointer border-none bg-transparent text-[13px] text-text-secondary"
         >
           {mode === 'sign-in'
             ? 'Não tem conta? Criar uma agora'
@@ -144,12 +97,3 @@ export function LoginView() {
     </div>
   );
 }
-
-const inputStyle: React.CSSProperties = {
-  background: 'var(--bg-base, #14171A)',
-  border: '1px solid var(--border, #2D3339)',
-  borderRadius: 6,
-  padding: '12px',
-  fontSize: 14,
-  color: 'var(--text-primary, #EDEEEC)',
-};
