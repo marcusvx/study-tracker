@@ -4,8 +4,10 @@ import { DataSourceOptions } from 'typeorm';
 import { StudyItemEntity } from '../study-items/study-item.entity';
 import { ProgressLogEntity } from '../progress-logs/progress-log.entity';
 import { UserEntity } from '../users/user.entity';
+import { DeviceTokenEntity } from '../device-tokens/device-token.entity';
+import { ReminderSendEntity } from '../reminders/reminder-send.entity';
 
-// Local dev points this at docker-compose Postgres; production points it at Supabase.
+// Local: docker-compose Postgres; production: Supabase connection string.
 // Only the latter needs SSL, gated on NODE_ENV rather than on the URL itself.
 const baseOptions: DataSourceOptions = {
   type: 'postgres',
@@ -14,7 +16,13 @@ const baseOptions: DataSourceOptions = {
     process.env.NODE_ENV === 'production'
       ? { rejectUnauthorized: false }
       : false,
-  entities: [UserEntity, StudyItemEntity, ProgressLogEntity],
+  entities: [
+    UserEntity,
+    StudyItemEntity,
+    ProgressLogEntity,
+    DeviceTokenEntity,
+    ReminderSendEntity,
+  ],
   synchronize: false,
 };
 
