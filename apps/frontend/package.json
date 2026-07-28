@@ -27,6 +27,7 @@
     "react-i18next": "^17.0.11"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^8.4.2",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.2.17",
