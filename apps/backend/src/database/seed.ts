@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import dataSource from './data-source';
 import { SeedResult } from './seeds/seed-records';
-import { seedUsers } from './seeds/seed-users';
+import { seedAuthUser } from './seeds/seed-auth-user';
 import { seedStudyItems } from './seeds/seed-study-items';
 
 type Seed = {
@@ -12,8 +12,8 @@ type Seed = {
 
 const seeds: Seed[] = [
   {
-    name: 'users',
-    run: seedUsers,
+    name: 'auth_user',
+    run: seedAuthUser,
   },
   {
     name: 'study_items',

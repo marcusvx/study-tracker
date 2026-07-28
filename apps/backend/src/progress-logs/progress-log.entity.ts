@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { StudyItemEntity } from '../study-items/study-item.entity';
 
@@ -24,7 +25,11 @@ export class ProgressLogEntity {
   @Column({ nullable: true })
   note?: string;
 
+  @Column({ type: 'uuid' })
+  studyItemId!: string;
+
   @ManyToOne(() => StudyItemEntity, (item) => item.log, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'studyItemId' })
   studyItem!: StudyItemEntity;
 
   @CreateDateColumn()

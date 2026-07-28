@@ -3,7 +3,6 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSourceOptions } from 'typeorm';
 import { StudyItemEntity } from '../study-items/study-item.entity';
 import { ProgressLogEntity } from '../progress-logs/progress-log.entity';
-import { UserEntity } from '../users/user.entity';
 import { DeviceTokenEntity } from '../device-tokens/device-token.entity';
 import { ReminderSendEntity } from '../reminders/reminder-send.entity';
 
@@ -17,7 +16,6 @@ const baseOptions: DataSourceOptions = {
       ? { rejectUnauthorized: false }
       : false,
   entities: [
-    UserEntity,
     StudyItemEntity,
     ProgressLogEntity,
     DeviceTokenEntity,

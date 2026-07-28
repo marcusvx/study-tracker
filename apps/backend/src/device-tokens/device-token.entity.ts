@@ -4,11 +4,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
   Index,
 } from 'typeorm';
-import { UserEntity } from '../users/user.entity';
 
 export type DevicePlatform = 'ios' | 'android' | 'web';
 
@@ -17,13 +14,10 @@ export class DeviceTokenEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  /** Supabase Auth user id (auth.users.id / JWT `sub`). FK enforced in DB. */
   @Index()
   @Column({ type: 'uuid' })
   userId!: string;
-
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
-  user!: UserEntity;
 
   @Column({ type: 'text', unique: true })
   token!: string;

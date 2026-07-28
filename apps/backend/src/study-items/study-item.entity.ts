@@ -5,11 +5,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
 import { ProgressLogEntity } from '../progress-logs/progress-log.entity';
-import { UserEntity } from '../users/user.entity';
 
 export type Category = 'book' | 'cert' | 'course' | 'work';
 export type Unit = 'pages' | '%' | 'hours' | 'modules';
@@ -20,14 +17,9 @@ export class StudyItemEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  /** Supabase Auth user id (auth.users.id / JWT `sub`). FK enforced in DB. */
   @Column({ type: 'uuid' })
   userId!: string;
-
-  @ManyToOne(() => UserEntity, (user) => user.studyItems, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'userId' })
-  user!: UserEntity;
 
   @Column()
   title!: string;
@@ -62,7 +54,7 @@ export class StudyItemEntity {
   @Column({ type: 'varchar', default: 'active' })
   status!: Status;
 
-  @OneToMany(() => ProgressLogEntity, (log) => log.studyItem, { cascade: true })
+  @OneToMany(() => ProgressLogEntity, (log) => log.studyItem)
   log!: ProgressLogEntity[];
 
   @CreateDateColumn()

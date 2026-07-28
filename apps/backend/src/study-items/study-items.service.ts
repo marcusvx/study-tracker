@@ -107,7 +107,7 @@ export class StudyItemsService {
       amount: dto.amount,
       minutes: dto.minutes,
       note: dto.note || undefined,
-      studyItem: item,
+      studyItemId: id,
     });
 
     await this.progressLogRepo.save(newLog);
@@ -116,12 +116,13 @@ export class StudyItemsService {
       item.totalScope,
       item.currentProgress + dto.amount,
     );
-    item.currentProgress = newProgress;
-    if (newProgress >= item.totalScope) {
-      item.status = 'done';
-    }
+    const status =
+      newProgress >= item.totalScope ? 'done' : item.status;
 
-    await this.studyItemRepo.save(item);
+    await this.studyItemRepo.update(id, {
+      currentProgress: newProgress,
+      status,
+    });
     return this.findOne(id, userId);
   }
 

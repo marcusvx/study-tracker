@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { createRemoteJWKSet, jwtVerify, type JWTVerifyGetKey } from 'jose';
+import { AuthUserService } from './auth-user.service';
 
 export interface AuthenticatedRequest extends Request {
   user?: { sub: string };
@@ -28,6 +29,8 @@ function getJwks(): JWTVerifyGetKey {
 
 @Injectable()
 export class SupabaseAuthGuard implements CanActivate {
+  constructor(private readonly authUserService: AuthUserService) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const token = this.extractToken(request);
@@ -40,6 +43,7 @@ export class SupabaseAuthGuard implements CanActivate {
       if (!payload.sub) {
         throw new UnauthorizedException('Invalid token');
       }
+      await this.authUserService.ensureExists(payload.sub);
       request.user = { sub: payload.sub };
       return true;
     } catch (err) {

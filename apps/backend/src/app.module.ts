@@ -5,7 +5,6 @@ import { typeOrmModuleOptions } from './database/typeorm.config';
 import { HealthController } from './health/health.controller';
 import { StudyItemsModule } from './study-items/study-items.module';
 import { ProgressLogsModule } from './progress-logs/progress-logs.module';
-import { UsersModule } from './users/users.module';
 import { DeviceTokensModule } from './device-tokens/device-tokens.module';
 import { RemindersModule } from './reminders/reminders.module';
 
@@ -14,7 +13,6 @@ import { RemindersModule } from './reminders/reminders.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(typeOrmModuleOptions),
-    UsersModule,
     StudyItemsModule,
     ProgressLogsModule,
     DeviceTokensModule,
