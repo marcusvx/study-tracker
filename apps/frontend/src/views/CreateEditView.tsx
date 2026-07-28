@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 import { Category, StudyItem, Unit } from '../types/study';
 import { categoryMeta, IconArrowLeft } from '../components/icons/Index';
 
@@ -8,6 +9,13 @@ interface CreateEditViewProps {
   onSave: (item: Omit<StudyItem, 'id' | 'log'> & { id?: string }) => void;
   onBack: () => void;
 }
+
+type FieldErrors = {
+  title?: string;
+  totalScope?: string;
+  currentProgress?: string;
+  sessionMinutes?: string;
+};
 
 export function CreateEditView({
   initial,
@@ -35,9 +43,27 @@ export function CreateEditView({
   const [notificationsOn, setNotificationsOn] = useState(
     initial?.notificationsOn ?? true,
   );
+  const [errors, setErrors] = useState<FieldErrors>({});
+
+  const validate = (): FieldErrors => {
+    const next: FieldErrors = {};
+    if (!title.trim()) next.title = t('createEdit.errorTitleRequired');
+    if (!totalScope || parseFloat(totalScope) <= 0)
+      next.totalScope = t('createEdit.errorTotalScopeRequired');
+    if (currentProgress && parseFloat(currentProgress) < 0)
+      next.currentProgress = t('createEdit.errorCurrentProgressInvalid');
+    if (sessionMinutes && parseInt(sessionMinutes) <= 0)
+      next.sessionMinutes = t('createEdit.errorSessionMinutesInvalid');
+    return next;
+  };
 
   const handleSave = () => {
-    if (!title.trim() || !totalScope) return;
+    const validationErrors = validate();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) {
+      toast.error(t('createEdit.errorFormInvalid'));
+      return;
+    }
     onSave({
       id: initial?.id,
       title: title.trim(),
@@ -117,10 +143,14 @@ export function CreateEditView({
           <label style={labelStyle}>{t('createEdit.fieldTitle')}</label>
           <input
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Ex: Designing Data-Intensive Applications"
-            style={inputStyle}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (errors.title) setErrors((prev) => ({ ...prev, title: undefined }));
+            }}
+            placeholder={t('createEdit.titlePlaceholder')}
+            style={errors.title ? inputErrorStyle : inputStyle}
           />
+          {errors.title && <div style={errorTextStyle}>{errors.title}</div>}
 
           {/* Category */}
           <label style={labelStyle}>{t('createEdit.fieldCategory')}</label>
@@ -217,10 +247,17 @@ export function CreateEditView({
               <input
                 type="number"
                 value={totalScope}
-                onChange={(e) => setTotalScope(e.target.value)}
-                placeholder="Ex: 500"
-                style={inputStyle}
+                onChange={(e) => {
+                  setTotalScope(e.target.value);
+                  if (errors.totalScope)
+                    setErrors((prev) => ({ ...prev, totalScope: undefined }));
+                }}
+                placeholder={t('createEdit.totalScopePlaceholder')}
+                style={errors.totalScope ? inputErrorStyle : inputStyle}
               />
+              {errors.totalScope && (
+                <div style={errorTextStyle}>{errors.totalScope}</div>
+              )}
             </div>
             <div>
               <label style={labelStyle}>
@@ -229,10 +266,20 @@ export function CreateEditView({
               <input
                 type="number"
                 value={currentProgress}
-                onChange={(e) => setCurrentProgress(e.target.value)}
+                onChange={(e) => {
+                  setCurrentProgress(e.target.value);
+                  if (errors.currentProgress)
+                    setErrors((prev) => ({
+                      ...prev,
+                      currentProgress: undefined,
+                    }));
+                }}
                 placeholder="0"
-                style={inputStyle}
+                style={errors.currentProgress ? inputErrorStyle : inputStyle}
               />
+              {errors.currentProgress && (
+                <div style={errorTextStyle}>{errors.currentProgress}</div>
+              )}
             </div>
           </div>
           <label style={labelStyle}>
@@ -361,10 +408,17 @@ export function CreateEditView({
           <input
             type="number"
             value={sessionMinutes}
-            onChange={(e) => setSessionMinutes(e.target.value)}
+            onChange={(e) => {
+              setSessionMinutes(e.target.value);
+              if (errors.sessionMinutes)
+                setErrors((prev) => ({ ...prev, sessionMinutes: undefined }));
+            }}
             placeholder="30"
-            style={inputStyle}
+            style={errors.sessionMinutes ? inputErrorStyle : inputStyle}
           />
+          {errors.sessionMinutes && (
+            <div style={errorTextStyle}>{errors.sessionMinutes}</div>
+          )}
 
           <label style={labelStyle}>
             {t('createEdit.fieldReminderTime')}
@@ -472,6 +526,19 @@ const inputStyle: React.CSSProperties = {
   marginBottom: 16,
   outline: 'none',
   fontFamily: 'inherit',
+};
+
+const inputErrorStyle: React.CSSProperties = {
+  ...inputStyle,
+  border: '1px solid var(--alert, #C9694F)',
+  marginBottom: 6,
+};
+
+const errorTextStyle: React.CSSProperties = {
+  fontSize: 12,
+  color: 'var(--alert, #C9694F)',
+  marginTop: -10,
+  marginBottom: 16,
 };
 
 const stepperBtn: React.CSSProperties = {

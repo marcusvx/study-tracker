@@ -57,6 +57,7 @@
     "titleEdit": "Editar item",
     "titleNew": "Novo item de estudo",
     "fieldTitle": "Título",
+    "titlePlaceholder": "Ex: Designing Data-Intensive Applications",
     "fieldCategory": "Categoria",
     "fieldUnit": "Unidade",
     "unitPages": "Páginas",
@@ -64,6 +65,7 @@
     "unitHours": "Horas",
     "unitModules": "Módulos",
     "fieldTotalScope": "Escopo total",
+    "totalScopePlaceholder": "Ex: 500",
     "fieldCurrentProgress": "Progresso atual",
     "fieldDeadline": "Prazo final",
     "fieldCadence": "Cadência dos Estudos",
@@ -74,7 +76,12 @@
     "fieldReminderTime": "Horário do lembrete",
     "notifications": "Notificações",
     "submitCreate": "Criar item",
-    "submitSave": "Salvar alterações"
+    "submitSave": "Salvar alterações",
+    "errorTitleRequired": "Informe um título.",
+    "errorTotalScopeRequired": "Informe um escopo total maior que zero.",
+    "errorCurrentProgressInvalid": "Progresso atual não pode ser negativo.",
+    "errorSessionMinutesInvalid": "Tempo por sessão deve ser maior que zero.",
+    "errorFormInvalid": "Revise os campos destacados."
   },
   "settings": {
     "title": "Configurações",
