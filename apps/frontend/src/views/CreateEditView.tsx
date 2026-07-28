@@ -28,12 +28,22 @@ const labelClassName =
   'mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-text-secondary';
 
 const inputClassName =
-  'mb-4 w-full rounded-md border border-border bg-ink px-3.5 py-3 text-[15px] text-text-primary outline-none';
+  'w-full rounded-md border border-border bg-ink px-3.5 py-3 text-[15px] text-text-primary outline-none';
 
 const inputErrorClassName =
-  'mb-1.5 w-full rounded-md border border-alert bg-ink px-3.5 py-3 text-[15px] text-text-primary outline-none';
+  'w-full rounded-md border border-alert bg-ink px-3.5 py-3 text-[15px] text-text-primary outline-none';
 
-const errorTextClassName = 'mb-4 -mt-2.5 text-xs text-alert';
+/** Always rendered so validation text does not shift following content. */
+function FieldError({ message }: Readonly<{ message?: string }>) {
+  return (
+    <div
+      className="mb-2 mt-1.5 min-h-4 text-xs leading-snug text-alert"
+      role={message ? 'alert' : undefined}
+    >
+      {message}
+    </div>
+  );
+}
 
 // Shared active/inactive look for unit and cadence selector chips.
 // (The category chips have their own per-category runtime colors, so
@@ -161,9 +171,7 @@ export function CreateEditView({
             placeholder={t('createEdit.titlePlaceholder')}
             className={errors.title ? inputErrorClassName : inputClassName}
           />
-          {errors.title && (
-            <div className={errorTextClassName}>{errors.title}</div>
-          )}
+          <FieldError message={errors.title} />
 
           {/* Category */}
           <label className={labelClassName}>
@@ -234,9 +242,7 @@ export function CreateEditView({
                   errors.totalScope ? inputErrorClassName : inputClassName
                 }
               />
-              {errors.totalScope && (
-                <div className={errorTextClassName}>{errors.totalScope}</div>
-              )}
+              <FieldError message={errors.totalScope} />
             </div>
             <div>
               <label className={labelClassName}>
@@ -258,11 +264,7 @@ export function CreateEditView({
                   errors.currentProgress ? inputErrorClassName : inputClassName
                 }
               />
-              {errors.currentProgress && (
-                <div className={errorTextClassName}>
-                  {errors.currentProgress}
-                </div>
-              )}
+              <FieldError message={errors.currentProgress} />
             </div>
           </div>
           <label className={labelClassName}>
@@ -273,7 +275,7 @@ export function CreateEditView({
             type="date"
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
-            className={inputClassName}
+            className={`${inputClassName} mb-4`}
           />
         </Card>
 
@@ -345,9 +347,7 @@ export function CreateEditView({
               errors.sessionMinutes ? inputErrorClassName : inputClassName
             }
           />
-          {errors.sessionMinutes && (
-            <div className={errorTextClassName}>{errors.sessionMinutes}</div>
-          )}
+          <FieldError message={errors.sessionMinutes} />
 
           <label className={labelClassName}>
             {t('createEdit.fieldReminderTime')}
@@ -356,7 +356,7 @@ export function CreateEditView({
             type="time"
             value={reminderTime}
             onChange={(e) => setReminderTime(e.target.value)}
-            className={inputClassName}
+            className={`${inputClassName} mb-4`}
           />
 
           <div className="mt-2 flex items-center justify-between">

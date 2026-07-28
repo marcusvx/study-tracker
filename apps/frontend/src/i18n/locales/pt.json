@@ -80,9 +80,9 @@
     "submitCreating": "Criando...",
     "submitSaving": "Salvando...",
     "errorTitleRequired": "Informe um título.",
-    "errorTotalScopeRequired": "Informe um escopo total maior que zero.",
-    "errorCurrentProgressInvalid": "Progresso atual não pode ser negativo.",
-    "errorSessionMinutesInvalid": "Tempo por sessão deve ser maior que zero.",
+    "errorTotalScopeRequired": "Informe um valor positivo.",
+    "errorCurrentProgressInvalid": "Não pode ser negativo.",
+    "errorSessionMinutesInvalid": "Deve ser maior que zero.",
     "errorFormInvalid": "Revise os campos destacados."
   },
   "settings": {
