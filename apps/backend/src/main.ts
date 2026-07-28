@@ -1,4 +1,6 @@
-import { ValidationPipe } from '@nestjs/common';
+import './instrumentation';
+
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
@@ -20,7 +22,9 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3000);
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
+  Logger.log(`Listening on port ${port}`, 'Bootstrap');
 }
 
 void bootstrap();
