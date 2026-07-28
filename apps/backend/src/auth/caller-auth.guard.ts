@@ -8,6 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { timingSafeEqual } from 'node:crypto';
 import { Request } from 'express';
+import { AppLogger } from '../telemetry/app-logger';
 
 /**
  * Caller-agnostic auth for internal cron/webhook endpoints.
@@ -17,18 +18,32 @@ import { Request } from 'express';
  */
 @Injectable()
 export class CallerAuthGuard implements CanActivate {
+  private readonly logger = new AppLogger(CallerAuthGuard.name);
+
   constructor(private readonly config: ConfigService) {}
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
+    const clientIp = normalizeIp(request.ip) ?? 'unknown';
+    const route = `${request.method} ${request.originalUrl ?? request.url}`;
 
     const expectedSecret = this.config.get<string>('CRON_SECRET')?.trim();
     if (!expectedSecret) {
+      this.logger.warn('Caller auth rejected (401): secret not configured', {
+        'http.route': route,
+        'http.client_ip': clientIp,
+        'auth.reason': 'secret_not_configured',
+      });
       throw new UnauthorizedException('Caller auth is not configured');
     }
 
     const provided = this.extractBearer(request);
     if (!provided || !timingSafeEqualString(provided, expectedSecret)) {
+      this.logger.warn('Caller auth rejected (401): invalid credentials', {
+        'http.route': route,
+        'http.client_ip': clientIp,
+        'auth.reason': provided ? 'invalid_secret' : 'missing_bearer',
+      });
       throw new UnauthorizedException('Invalid caller credentials');
     }
 
@@ -36,11 +51,23 @@ export class CallerAuthGuard implements CanActivate {
       this.config.get<string>('CRON_ALLOWED_IPS'),
     );
     if (allowedIps.size === 0) {
+      this.logger.warn(
+        'Caller auth rejected (403): IP allowlist not configured',
+        {
+          'http.route': route,
+          'http.client_ip': clientIp,
+          'auth.reason': 'allowlist_not_configured',
+        },
+      );
       throw new ForbiddenException('Caller IP allowlist is not configured');
     }
 
-    const clientIp = normalizeIp(request.ip);
-    if (!clientIp || !allowedIps.has(clientIp)) {
+    if (!clientIp || clientIp === 'unknown' || !allowedIps.has(clientIp)) {
+      this.logger.warn('Caller auth rejected (403): IP not allowed', {
+        'http.route': route,
+        'http.client_ip': clientIp,
+        'auth.reason': 'ip_not_allowed',
+      });
       throw new ForbiddenException('Caller IP is not allowed');
     }
 
