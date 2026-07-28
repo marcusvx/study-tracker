@@ -3,10 +3,13 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { Category, StudyItem, Unit } from '../types/study';
 import { categoryMeta, IconArrowLeft } from '../components/icons/Index';
+import { Spinner } from '../components/ui/Spinner';
 
 interface CreateEditViewProps {
   initial?: StudyItem;
-  onSave: (item: Omit<StudyItem, 'id' | 'log'> & { id?: string }) => void;
+  onSave: (
+    item: Omit<StudyItem, 'id' | 'log'> & { id?: string },
+  ) => Promise<void>;
   onBack: () => void;
 }
 
@@ -44,6 +47,7 @@ export function CreateEditView({
     initial?.notificationsOn ?? true,
   );
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [isSaving, setIsSaving] = useState(false);
 
   const validate = (): FieldErrors => {
     const next: FieldErrors = {};
@@ -57,28 +61,44 @@ export function CreateEditView({
     return next;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const validationErrors = validate();
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) {
       toast.error(t('createEdit.errorFormInvalid'));
       return;
     }
-    onSave({
-      id: initial?.id,
-      title: title.trim(),
-      category,
-      unit,
-      totalScope: parseFloat(totalScope),
-      currentProgress: parseFloat(currentProgress) || 0,
-      deadline: deadline || undefined,
-      cadenceDays,
-      sessionMinutes: parseInt(sessionMinutes) || 30,
-      reminderTime: reminderTime || undefined,
-      notificationsOn,
-      status: initial?.status ?? 'active',
-    });
+    setIsSaving(true);
+    try {
+      await onSave({
+        id: initial?.id,
+        title: title.trim(),
+        category,
+        unit,
+        totalScope: parseFloat(totalScope),
+        currentProgress: parseFloat(currentProgress) || 0,
+        deadline: deadline || undefined,
+        cadenceDays,
+        sessionMinutes: parseInt(sessionMinutes) || 30,
+        reminderTime: reminderTime || undefined,
+        notificationsOn,
+        status: initial?.status ?? 'active',
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
+
+  let submitLabel: string;
+  if (isSaving) {
+    submitLabel = initial
+      ? t('createEdit.submitSaving')
+      : t('createEdit.submitCreating');
+  } else {
+    submitLabel = initial
+      ? t('createEdit.submitSave')
+      : t('createEdit.submitCreate');
+  }
 
   const units: Unit[] = ['pages', '%', 'hours', 'modules'];
   const unitLabels: Record<Unit, string> = {
@@ -478,8 +498,13 @@ export function CreateEditView({
         </div>
 
         <button
-          onClick={handleSave}
+          onClick={() => void handleSave()}
+          disabled={isSaving}
           style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 10,
             background: 'var(--accent, #E8A33D)',
             color: '#14171A',
             border: 'none',
@@ -487,11 +512,13 @@ export function CreateEditView({
             padding: '16px',
             fontSize: 16,
             fontWeight: 700,
-            cursor: 'pointer',
+            cursor: isSaving ? 'default' : 'pointer',
+            opacity: isSaving ? 0.7 : 1,
             width: '100%',
           }}
         >
-          {initial ? t('createEdit.submitSave') : t('createEdit.submitCreate')}
+          {isSaving && <Spinner size={18} color="#14171A" />}
+          {submitLabel}
         </button>
       </div>
     </div>

@@ -77,6 +77,8 @@
     "notifications": "Notificações",
     "submitCreate": "Criar item",
     "submitSave": "Salvar alterações",
+    "submitCreating": "Criando...",
+    "submitSaving": "Salvando...",
     "errorTitleRequired": "Informe um título.",
     "errorTotalScopeRequired": "Informe um escopo total maior que zero.",
     "errorCurrentProgressInvalid": "Progresso atual não pode ser negativo.",

@@ -9,6 +9,7 @@ import { CreateEditView } from './views/CreateEditView';
 import { SettingsView } from './views/SettingsView';
 import { LoginView } from './views/LoginView';
 import { ProgressSheet } from './components/study/ProgressSheet';
+import { Spinner } from './components/ui/Spinner';
 import { supabase } from './lib/supabaseClient';
 import {
   fetchStudyItems,
@@ -189,17 +190,7 @@ export function App() {
             gap: 12,
           }}
         >
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              border: '3px solid #334155',
-              borderTopColor: '#3B82F6',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite',
-            }}
-          />
-          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <Spinner size={32} color="#3B82F6" />
           <span>{t('app.loading')}</span>
         </div>
       ) : error ? (
@@ -268,7 +259,7 @@ export function App() {
           {view === 'create' && (
             <CreateEditView
               initial={editItem}
-              onSave={(data) => void handleSaveItem(data)}
+              onSave={handleSaveItem}
               onBack={() => setView(editItem ? 'detail' : 'dashboard')}
             />
           )}
