@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { ProgressLogEntity } from '../progress-logs/progress-log.entity';
 
-export type Category = 'book' | 'cert' | 'course' | 'work';
+export type Category = 'book' | 'course' | 'practice';
 export type Unit = 'pages' | '%' | 'hours' | 'modules';
 export type Status = 'active' | 'paused' | 'done';
 
@@ -30,8 +30,8 @@ export class StudyItemEntity {
   @Column({ type: 'varchar', default: 'pages' })
   unit!: Unit;
 
-  @Column({ type: 'float' })
-  totalScope!: number;
+  @Column({ type: 'float', nullable: true })
+  totalScope?: number;
 
   @Column({ type: 'float', default: 0 })
   currentProgress!: number;

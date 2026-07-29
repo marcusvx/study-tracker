@@ -13,7 +13,7 @@ export class UpdateStudyItemDto {
   @IsOptional()
   title?: string;
 
-  @IsEnum(['book', 'cert', 'course', 'work'])
+  @IsEnum(['book', 'course', 'practice'])
   @IsOptional()
   category?: Category;
 

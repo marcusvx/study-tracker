@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { cva } from 'class-variance-authority';
 import toast from 'react-hot-toast';
 import { Category, StudyItem, Unit } from '../types/study';
+import { CATEGORY_UNITS } from '../constants/categoryUnits';
 import { categoryMeta } from '../components/icons/categoryMeta';
 import { BackButton } from '../components/ui/BackButton';
 import { Card } from '../components/ui/Card';
@@ -45,9 +46,7 @@ function FieldError({ message }: Readonly<{ message?: string }>) {
   );
 }
 
-// Shared active/inactive look for unit and cadence selector chips.
-// (The category chips have their own per-category runtime colors, so
-// they aren't expressed with this variant.)
+// Shared active/inactive look for category, unit, and cadence selector chips.
 const chipToggle = cva('cursor-pointer border transition-[all] duration-150', {
   variants: {
     selected: {
@@ -92,8 +91,11 @@ export function CreateEditView({
   const validate = (): FieldErrors => {
     const next: FieldErrors = {};
     if (!title.trim()) next.title = t('createEdit.errorTitleRequired');
-    if (!totalScope || Number.parseFloat(totalScope) <= 0)
+    const hasScope = totalScope.trim() !== '';
+    const scopeInvalid = hasScope && Number.parseFloat(totalScope) <= 0;
+    if ((category !== 'practice' && !hasScope) || scopeInvalid) {
       next.totalScope = t('createEdit.errorTotalScopeRequired');
+    }
     if (currentProgress && Number.parseFloat(currentProgress) < 0)
       next.currentProgress = t('createEdit.errorCurrentProgressInvalid');
     if (sessionMinutes && Number.parseInt(sessionMinutes) <= 0)
@@ -115,7 +117,9 @@ export function CreateEditView({
         title: title.trim(),
         category,
         unit,
-        totalScope: Number.parseFloat(totalScope),
+        totalScope: totalScope.trim()
+          ? Number.parseFloat(totalScope)
+          : undefined,
         currentProgress: Number.parseFloat(currentProgress) || 0,
         deadline: deadline || undefined,
         cadenceDays,
@@ -140,7 +144,7 @@ export function CreateEditView({
       : t('createEdit.submitCreate');
   }
 
-  const units: Unit[] = ['pages', '%', 'hours', 'modules'];
+  const units: Unit[] = CATEGORY_UNITS[category];
   const unitLabels: Record<Unit, string> = {
     pages: t('createEdit.unitPages'),
     '%': t('createEdit.unitPercent'),
@@ -177,7 +181,7 @@ export function CreateEditView({
           <label className={labelClassName}>
             {t('createEdit.fieldCategory')}
           </label>
-          <div className="mb-4 grid grid-cols-4 gap-2">
+          <div className="mb-4 grid grid-cols-3 gap-2">
             {(Object.keys(categoryMeta) as Category[]).map((c) => {
               const m = categoryMeta[c];
               const active = category === c;
@@ -185,17 +189,13 @@ export function CreateEditView({
                 <button
                   key={c}
                   type="button"
-                  onClick={() => setCategory(c)}
-                  className="flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border border-border bg-input px-2 py-3 text-text-secondary transition-[all] duration-150"
-                  style={
-                    active
-                      ? {
-                          border: `2px solid ${m.color}`,
-                          background: m.bg,
-                          color: m.color,
-                        } // per-category runtime color from categoryMeta
-                      : undefined
-                  }
+                  onClick={() => {
+                    setCategory(c);
+                    if (!CATEGORY_UNITS[c].includes(unit)) {
+                      setUnit(CATEGORY_UNITS[c][0]);
+                    }
+                  }}
+                  className={`flex flex-col items-center gap-1.5 rounded-lg px-2 py-3 ${chipToggle({ selected: active })}`}
                 >
                   <m.Icon size={20} />
                   <span className="text-[10px] font-semibold">
@@ -227,7 +227,12 @@ export function CreateEditView({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className={labelClassName}>
-                {t('createEdit.fieldTotalScope')}
+                {t('createEdit.fieldTotalScope')}{' '}
+                {category === 'practice' && (
+                  <span className="text-text-secondary">
+                    {t('common.optional')}
+                  </span>
+                )}
               </label>
               <input
                 type="number"

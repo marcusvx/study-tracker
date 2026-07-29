@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 import { StudyItem } from '../../../types/study';
 import { BottomSheet } from '../../ui/BottomSheet';
 
@@ -24,11 +25,33 @@ export function ProgressSheet({
   const [amount, setAmount] = useState('');
   const [minutes, setMinutes] = useState('');
   const [note, setNote] = useState('');
+  const [minutesError, setMinutesError] = useState<string | undefined>();
+
+  const remaining =
+    item.totalScope != null ? item.totalScope - item.currentProgress : Infinity;
+
+  const handleAmountChange = (raw: string) => {
+    const parsed = Number.parseFloat(raw);
+    if (Number.isFinite(parsed) && parsed > remaining) {
+      setAmount(String(remaining));
+      toast.error(
+        t('progressSheet.amountClamped', { max: remaining, unit: item.unit }),
+      );
+      return;
+    }
+    setAmount(raw);
+  };
 
   const handleSave = () => {
-    const a = Number.parseFloat(amount);
-    const m = Number.parseInt(minutes);
-    if (!a || !m) return;
+    const m = Number.parseInt(minutes, 10);
+    if (!m || m <= 0) {
+      setMinutesError(t('progressSheet.errorMinutesRequired'));
+      return;
+    }
+    setMinutesError(undefined);
+    // Advancement is optional: logging time spent must stand on its own
+    // (e.g. "studied a module but didn't finish it").
+    const a = Number.parseFloat(amount) || 0;
     onSave(a, m, note);
   };
 
@@ -42,12 +65,14 @@ export function ProgressSheet({
 
         <label className={labelClassName}>
           {t('progressSheet.amountLabel')}{' '}
-          <span className="text-text-secondary">({item.unit})</span>
+          <span className="text-text-secondary">
+            ({item.unit}) {t('common.optional')}
+          </span>
         </label>
         <input
           type="number"
           value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={(e) => handleAmountChange(e.target.value)}
           placeholder={t('progressSheet.amountPlaceholder', {
             unit: item.unit,
           })}
@@ -61,10 +86,21 @@ export function ProgressSheet({
         <input
           type="number"
           value={minutes}
-          onChange={(e) => setMinutes(e.target.value)}
+          onChange={(e) => {
+            setMinutes(e.target.value);
+            if (minutesError) setMinutesError(undefined);
+          }}
           placeholder={t('progressSheet.minutesPlaceholder')}
           className={inputClassName}
         />
+        {minutesError && (
+          <div
+            className="-mt-3 mb-3 text-xs leading-snug text-alert"
+            role="alert"
+          >
+            {minutesError}
+          </div>
+        )}
 
         <label className={labelClassName}>
           {t('progressSheet.noteLabel')}{' '}

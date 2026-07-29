@@ -29,7 +29,7 @@ const initialItems = [
   },
   {
     title: 'AWS Solutions Architect Associate',
-    category: 'cert' as const,
+    category: 'course' as const,
     unit: '%' as const,
     totalScope: 100,
     currentProgress: 42,
@@ -69,7 +69,7 @@ const initialItems = [
   },
   {
     title: 'RFC 9110 — HTTP Semantics',
-    category: 'work' as const,
+    category: 'book' as const,
     unit: 'pages' as const,
     totalScope: 194,
     currentProgress: 194,

@@ -65,14 +65,10 @@ export function DetailView({
       <div className="pt-safe border-b border-border bg-surface p-5">
         <BackButton onClick={onBack} label={t('common.back')} />
         <div className="mb-2 flex items-center gap-2">
-          {/* meta.color/meta.bg are a runtime lookup keyed by item.category */}
-          <span style={{ color: meta.color }}>
+          <span className="text-text-secondary">
             <meta.Icon size={16} />
           </span>
-          <span
-            style={{ color: meta.color, background: meta.bg }}
-            className="rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase"
-          >
+          <span className="rounded-full bg-input px-2 py-0.5 text-[11px] font-semibold uppercase text-text-secondary">
             {t(meta.labelKey)}
           </span>
         </div>
@@ -80,7 +76,9 @@ export function DetailView({
           {item.title}
         </div>
         <div className="font-mono text-[13px] text-text-secondary">
-          {item.currentProgress} / {item.totalScope} {item.unit}
+          {item.totalScope != null
+            ? `${item.currentProgress} / ${item.totalScope} ${item.unit}`
+            : `${item.currentProgress} ${item.unit}`}
         </div>
       </div>
 
@@ -93,11 +91,16 @@ export function DetailView({
                 {t('detail.progressPanel')}
               </div>
               <div className="mt-1 text-[13px] text-[var(--text-secondary)]">
-                {t('detail.progressPanelSub', {
-                  current: item.currentProgress,
-                  total: item.totalScope,
-                  unit: item.unit,
-                })}
+                {item.totalScope != null
+                  ? t('detail.progressPanelSub', {
+                      current: item.currentProgress,
+                      total: item.totalScope,
+                      unit: item.unit,
+                    })
+                  : t('detail.progressPanelSubNoScope', {
+                      current: item.currentProgress,
+                      unit: item.unit,
+                    })}
               </div>
             </div>
 
@@ -113,7 +116,7 @@ export function DetailView({
 
           <ProgressBar
             value={item.currentProgress}
-            max={item.totalScope}
+            max={item.totalScope ?? 0}
             color={onTrack ? 'var(--accent)' : 'var(--alert)'}
           />
 
@@ -130,7 +133,7 @@ export function DetailView({
         {/* ETA card */}
         {item.status !== 'done' && (
           <Card
-            className={`border-l-4 ${onTrack ? 'border-l-success' : 'border-l-alert'}`}
+            className={`border-l-4 ${onTrack ? 'border-l-accent' : 'border-l-alert'}`}
           >
             <div className={`${sectionLabelClassName} mb-2`}>
               {t('detail.etaTitle')}
@@ -141,7 +144,7 @@ export function DetailView({
                   {t('detail.etaCurrent')}
                 </div>
                 <div
-                  className={`font-mono text-lg font-bold ${onTrack ? 'text-success' : 'text-alert'}`}
+                  className={`font-mono text-lg font-bold ${onTrack ? 'text-accent' : 'text-alert'}`}
                 >
                   {daysLeft === Infinity ? '–' : formatDate(etaDate)}
                 </div>

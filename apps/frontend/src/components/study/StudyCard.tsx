@@ -15,12 +15,17 @@ interface StudyCardProps {
 const rhythmBadge = cva('rounded-full px-2.5 py-1 text-[11px] font-medium', {
   variants: {
     tone: {
-      success: 'text-success bg-success-light',
-      warning: 'text-warning bg-warning-light',
-      alert: 'text-alert bg-alert-light',
+      // On-pace mirrors the progress dial's on-track color (amber accent);
+      // amber stays reserved for actions/progress, never for neutral states.
+      onTrack: 'text-accent bg-accent-light',
+      neutral: 'text-text-secondary bg-input',
+      late: 'text-alert bg-alert-light',
     },
   },
 });
+
+const categoryTagClassName =
+  'rounded-full bg-input px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-text-secondary';
 
 export function StudyCard({
   item,
@@ -32,11 +37,11 @@ export function StudyCard({
   const { daysLeft, onTrack } = calcETA(item);
   const p = pct(item);
 
-  let tone: 'success' | 'warning' | 'alert';
-  if (item.status === 'done') tone = 'success';
-  else if (item.status === 'paused') tone = 'warning';
-  else if (onTrack) tone = 'success';
-  else tone = 'alert';
+  let tone: 'onTrack' | 'neutral' | 'late';
+  if (item.status === 'done') tone = 'neutral';
+  else if (item.status === 'paused') tone = 'neutral';
+  else if (onTrack) tone = 'onTrack';
+  else tone = 'late';
 
   let rhythmText: string;
   if (item.status === 'done') rhythmText = t('studyCard.done');
@@ -60,24 +65,19 @@ export function StudyCard({
           <div className="min-w-0 flex-1">
             {/* Category badge */}
             <div className="mb-1.5 flex items-center gap-1.5">
-              {/* meta.color/meta.bg are a runtime lookup keyed by item.category
-                  (see categoryMeta.tsx) — not expressible as static Tailwind classes */}
-              <span style={{ color: meta.color }} className="flex">
+              <span className="flex text-text-secondary">
                 <meta.Icon size={14} />
               </span>
-              <span
-                style={{ color: meta.color, background: meta.bg }}
-                className="rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide"
-              >
-                {t(meta.labelKey)}
-              </span>
+              <span className={categoryTagClassName}>{t(meta.labelKey)}</span>
             </div>
 
             <div className="text-[15px] font-semibold leading-tight text-text-primary">
               {item.title}
             </div>
             <div className="mt-1 font-mono text-xs text-text-secondary">
-              {item.currentProgress} / {item.totalScope} {item.unit}
+              {item.totalScope != null
+                ? `${item.currentProgress} / ${item.totalScope} ${item.unit}`
+                : `${item.currentProgress} ${item.unit}`}
             </div>
           </div>
 
@@ -95,7 +95,7 @@ export function StudyCard({
         {/* Progress Bar fallback / secondary visual */}
         <ProgressBar
           value={item.currentProgress}
-          max={item.totalScope}
+          max={item.totalScope ?? 0}
           color={onTrack ? 'var(--accent)' : 'var(--alert)'}
         />
 

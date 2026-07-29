@@ -3,7 +3,9 @@
     "appName": "Study Tracker",
     "cancel": "Cancelar",
     "back": "Voltar",
-    "optional": "(opcional)"
+    "optional": "(opcional)",
+    "confirm": "Confirmar",
+    "notNow": "Agora não"
   },
   "app": {
     "loading": "Carregando dados do servidor...",
@@ -13,6 +15,7 @@
   "dashboard": {
     "activeCount_one": "{{count}} frente de estudo ativa",
     "activeCount_other": "{{count}} frentes de estudo ativas",
+    "weeklyTime": "{{time}} investidos esta semana",
     "tabAll": "Todos",
     "tabActive": "Ativos",
     "tabPaused": "Pausados",
@@ -30,6 +33,7 @@
   "detail": {
     "progressPanel": "PAINEL DE PROGRESSO",
     "progressPanelSub": "{{current}} de {{total}} {{unit}} concluidos",
+    "progressPanelSubNoScope": "{{current}} {{unit}} registrados",
     "dialLabel": "RITMO",
     "registerProgress": "+ Registrar Progresso",
     "etaTitle": "PREVISÃO DE CONCLUSÃO (ETA)",
@@ -123,7 +127,11 @@
     "minutesPlaceholder": "Ex: 30",
     "noteLabel": "Nota",
     "notePlaceholder": "Como foi a sessão?",
-    "save": "Salvar"
+    "save": "Salvar",
+    "amountClamped": "Valor ajustado para o máximo permitido ({{max}} {{unit}}).",
+    "errorMinutesRequired": "Informe os minutos gastos.",
+    "confirmDoneTitle": "Marcar como concluído?",
+    "confirmDoneMessage": "Você atingiu o escopo total de \"{{title}}\". Deseja marcar este item como concluído?"
   },
   "toasts": {
     "registerSuccess": "Progresso registrado com sucesso.",
@@ -139,8 +147,7 @@
   },
   "category": {
     "book": "Livro",
-    "cert": "Certificação",
     "course": "Curso",
-    "work": "Trabalho"
+    "practice": "Prática"
   }
 }

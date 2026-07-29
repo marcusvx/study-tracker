@@ -1,4 +1,4 @@
-export type Category = 'book' | 'cert' | 'course' | 'work';
+export type Category = 'book' | 'course' | 'practice';
 export type Unit = 'pages' | '%' | 'hours' | 'modules';
 export type Status = 'active' | 'paused' | 'done';
 
@@ -14,7 +14,7 @@ export interface StudyItem {
   title: string;
   category: Category;
   unit: Unit;
-  totalScope: number;
+  totalScope?: number;
   currentProgress: number;
   deadline?: string;
   cadenceDays: number;

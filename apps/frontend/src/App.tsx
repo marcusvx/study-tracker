@@ -9,6 +9,7 @@ import { CreateEditView } from './views/CreateEditView';
 import { SettingsView } from './views/SettingsView';
 import { LoginView } from './views/LoginView';
 import { ProgressSheet } from './components/features/study/ProgressSheet';
+import { ConfirmDialog } from './components/ui/ConfirmDialog';
 import { Spinner } from './components/ui/Spinner';
 import { supabase } from './lib/supabaseClient';
 import {
@@ -31,6 +32,7 @@ export function App() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [sheetItemId, setSheetItemId] = useState<string | null>(null);
   const [editItem, setEditItem] = useState<StudyItem | undefined>(undefined);
+  const [confirmDoneId, setConfirmDoneId] = useState<string | null>(null);
 
   useEffect(() => {
     void supabase.auth
@@ -72,6 +74,9 @@ export function App() {
   const sheetItem = sheetItemId
     ? items.find((i) => i.id === sheetItemId)
     : undefined;
+  const confirmDoneItem = confirmDoneId
+    ? items.find((i) => i.id === confirmDoneId)
+    : undefined;
 
   const handleRegister = async (
     id: string,
@@ -83,11 +88,34 @@ export function App() {
       const updatedItem = await addProgressLog(id, { amount, minutes, note });
       setItems((prev) => prev.map((i) => (i.id === id ? updatedItem : i)));
       toast.success(t('toasts.registerSuccess'));
+      // Reaching the total scope no longer auto-completes the item — ask
+      // for confirmation instead, so a data-entry mistake can't silently
+      // close it out.
+      if (
+        updatedItem.totalScope != null &&
+        updatedItem.currentProgress >= updatedItem.totalScope &&
+        updatedItem.status !== 'done'
+      ) {
+        setConfirmDoneId(id);
+      }
     } catch (err: any) {
       console.error('Error adding progress log:', err);
       toast.error(t('toasts.registerError'));
     } finally {
       setSheetItemId(null);
+    }
+  };
+
+  const handleConfirmDone = async (id: string) => {
+    try {
+      const updatedItem = await updateStudyItem(id, { status: 'done' });
+      setItems((prev) => prev.map((i) => (i.id === id ? updatedItem : i)));
+      toast.success(t('toasts.updateSuccess'));
+    } catch (err) {
+      console.error('Error marking item as done:', err);
+      toast.error(t('toasts.saveError'));
+    } finally {
+      setConfirmDoneId(null);
     }
   };
 
@@ -258,6 +286,19 @@ export function App() {
               void handleRegister(sheetItem.id, amount, minutes, note)
             }
             onClose={() => setSheetItemId(null)}
+          />
+        )}
+
+        {confirmDoneItem && (
+          <ConfirmDialog
+            title={t('progressSheet.confirmDoneTitle')}
+            message={t('progressSheet.confirmDoneMessage', {
+              title: confirmDoneItem.title,
+            })}
+            confirmLabel={t('common.confirm')}
+            cancelLabel={t('common.notNow')}
+            onConfirm={() => void handleConfirmDone(confirmDoneItem.id)}
+            onCancel={() => setConfirmDoneId(null)}
           />
         )}
       </>

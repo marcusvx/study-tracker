@@ -3,7 +3,9 @@
     "appName": "Study Tracker",
     "cancel": "Cancel",
     "back": "Back",
-    "optional": "(optional)"
+    "optional": "(optional)",
+    "confirm": "Confirm",
+    "notNow": "Not now"
   },
   "app": {
     "loading": "Loading data from the server...",
@@ -13,6 +15,7 @@
   "dashboard": {
     "activeCount_one": "{{count}} active study track",
     "activeCount_other": "{{count}} active study tracks",
+    "weeklyTime": "{{time}} invested this week",
     "tabAll": "All",
     "tabActive": "Active",
     "tabPaused": "Paused",
@@ -30,6 +33,7 @@
   "detail": {
     "progressPanel": "PROGRESS PANEL",
     "progressPanelSub": "{{current}} of {{total}} {{unit}} completed",
+    "progressPanelSubNoScope": "{{current}} {{unit}} logged",
     "dialLabel": "PACE",
     "registerProgress": "+ Log Progress",
     "etaTitle": "ESTIMATED COMPLETION (ETA)",
@@ -123,7 +127,11 @@
     "minutesPlaceholder": "E.g. 30",
     "noteLabel": "Note",
     "notePlaceholder": "How was the session?",
-    "save": "Save"
+    "save": "Save",
+    "amountClamped": "Value adjusted to the maximum allowed ({{max}} {{unit}}).",
+    "errorMinutesRequired": "Enter the minutes spent.",
+    "confirmDoneTitle": "Mark as done?",
+    "confirmDoneMessage": "You've reached the total scope for \"{{title}}\". Mark this item as done?"
   },
   "toasts": {
     "registerSuccess": "Progress logged successfully.",
@@ -139,8 +147,7 @@
   },
   "category": {
     "book": "Book",
-    "cert": "Certification",
     "course": "Course",
-    "work": "Work"
+    "practice": "Practice"
   }
 }

@@ -12,12 +12,12 @@
   --accent-light: rgba(232, 163, 61, 0.12);
   --alert: #C9694F;
   --alert-light: rgba(201, 105, 79, 0.12);
-  /* Status colors for StudyCard rhythm badge; kept identical across themes
-     to preserve existing behavior (previously hardcoded, theme-agnostic). */
+  /* Generic success color for form/account feedback (e.g. LoginView sign-up
+     confirmation) — kept identical across themes to preserve existing
+     behavior (previously hardcoded, theme-agnostic). Not used for progress
+     status anymore: on-pace states use --accent, per the design tokens. */
   --success: #34D399;
   --success-light: rgba(52, 211, 153, 0.12);
-  --warning: #FBBF24;
-  --warning-light: rgba(251, 191, 36, 0.12);
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   /* Recessed "well" background for inputs/selects/chips. Historically this
@@ -40,8 +40,6 @@
   --alert-light: rgba(181, 86, 61, 0.12);
   --success: #34D399;
   --success-light: rgba(52, 211, 153, 0.12);
-  --warning: #FBBF24;
-  --warning-light: rgba(251, 191, 36, 0.12);
   --input-bg: #F4F5F6;
 }
 
@@ -59,8 +57,6 @@
   --color-alert-light: var(--alert-light);
   --color-success: var(--success);
   --color-success-light: var(--success-light);
-  --color-warning: var(--warning);
-  --color-warning-light: var(--warning-light);
 
   /* Page background — theme-aware, switches with var(--bg-base). */
   --color-base: var(--bg-base);

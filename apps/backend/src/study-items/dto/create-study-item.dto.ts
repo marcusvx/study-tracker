@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsBoolean,
   Min,
+  ValidateIf,
 } from 'class-validator';
 import { Category, Unit, Status } from '../study-item.entity';
 
@@ -14,7 +15,7 @@ export class CreateStudyItemDto {
   @IsNotEmpty()
   title!: string;
 
-  @IsEnum(['book', 'cert', 'course', 'work'])
+  @IsEnum(['book', 'course', 'practice'])
   @IsOptional()
   category?: Category;
 
@@ -22,9 +23,15 @@ export class CreateStudyItemDto {
   @IsOptional()
   unit?: Unit;
 
+  // Required unless category is 'practice' (a time-tracking goal, not a hard
+  // ceiling); if a value is supplied for 'practice' it's still validated.
+  @ValidateIf(
+    (o: CreateStudyItemDto) =>
+      o.category !== 'practice' || o.totalScope !== undefined,
+  )
   @IsNumber()
   @Min(0.01)
-  totalScope!: number;
+  totalScope?: number;
 
   @IsNumber()
   @Min(0)

@@ -4,6 +4,14 @@ import { FilterTab, StudyItem } from '../types/study';
 import { IconPlus } from '../components/icons/IconPlus';
 import { IconSettings } from '../components/icons/IconSettings';
 import { StudyCard } from '../components/study/StudyCard';
+import { sortByUrgency, weeklyMinutes } from '../utils/eta';
+
+function formatMinutes(totalMinutes: number): string {
+  if (totalMinutes < 60) return `${totalMinutes}min`;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return minutes > 0 ? `${hours}h ${minutes}min` : `${hours}h`;
+}
 
 interface DashboardViewProps {
   items: StudyItem[];
@@ -23,13 +31,15 @@ export function DashboardView({
   const { t } = useTranslation();
   const [filter, setFilter] = useState<FilterTab>('all');
 
-  const filtered = items.filter((i) => {
-    if (filter === 'all') return true;
-    if (filter === 'active') return i.status === 'active';
-    if (filter === 'paused') return i.status === 'paused';
-    if (filter === 'done') return i.status === 'done';
-    return true;
-  });
+  const filtered = sortByUrgency(
+    items.filter((i) => {
+      if (filter === 'all') return true;
+      if (filter === 'active') return i.status === 'active';
+      if (filter === 'paused') return i.status === 'paused';
+      if (filter === 'done') return i.status === 'done';
+      return true;
+    }),
+  );
 
   const tabs: { key: FilterTab; label: string }[] = [
     { key: 'all', label: t('dashboard.tabAll') },
@@ -39,6 +49,7 @@ export function DashboardView({
   ];
 
   const activeCount = items.filter((i) => i.status === 'active').length;
+  const weeklyTime = formatMinutes(weeklyMinutes(items));
 
   return (
     <div className="min-h-screen bg-base pb-[100px]">
@@ -51,6 +62,9 @@ export function DashboardView({
             </div>
             <div className="mt-0.5 text-xs text-text-secondary">
               {t('dashboard.activeCount', { count: activeCount })}
+            </div>
+            <div className="mt-0.5 font-mono text-xs text-accent">
+              {t('dashboard.weeklyTime', { time: weeklyTime })}
             </div>
           </div>
           <button
