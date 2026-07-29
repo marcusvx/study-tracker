@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { useTranslation } from 'react-i18next';
 import { StudyItem } from '../../types/study';
+import { UNIT_LABEL_KEYS } from '../../constants/unitLabels';
 import { calcETA, pct } from '../../utils/eta';
 import { categoryMeta } from '../icons/categoryMeta';
 import { CircularProgressDial } from '../ui/CircularProgressDial';
@@ -76,8 +77,8 @@ export function StudyCard({
             </div>
             <div className="mt-1 font-mono text-xs text-text-secondary">
               {item.totalScope != null
-                ? `${item.currentProgress} / ${item.totalScope} ${item.unit}`
-                : `${item.currentProgress} ${item.unit}`}
+                ? `${item.currentProgress} / ${item.totalScope} ${t(UNIT_LABEL_KEYS[item.unit])}`
+                : `${item.currentProgress} ${t(UNIT_LABEL_KEYS[item.unit])}`}
             </div>
           </div>
 

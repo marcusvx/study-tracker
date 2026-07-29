@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { StudyItem } from '../../../types/study';
+import { UNIT_LABEL_KEYS } from '../../../constants/unitLabels';
 import { BottomSheet } from '../../ui/BottomSheet';
 
 interface ProgressSheetProps {
@@ -29,13 +30,14 @@ export function ProgressSheet({
 
   const remaining =
     item.totalScope != null ? item.totalScope - item.currentProgress : Infinity;
+  const unitLabel = t(UNIT_LABEL_KEYS[item.unit]);
 
   const handleAmountChange = (raw: string) => {
     const parsed = Number.parseFloat(raw);
     if (Number.isFinite(parsed) && parsed > remaining) {
       setAmount(String(remaining));
       toast.error(
-        t('progressSheet.amountClamped', { max: remaining, unit: item.unit }),
+        t('progressSheet.amountClamped', { max: remaining, unit: unitLabel }),
       );
       return;
     }
@@ -66,7 +68,7 @@ export function ProgressSheet({
         <label className={labelClassName}>
           {t('progressSheet.amountLabel')}{' '}
           <span className="text-text-secondary">
-            ({item.unit}) {t('common.optional')}
+            ({unitLabel}) {t('common.optional')}
           </span>
         </label>
         <input
@@ -74,7 +76,7 @@ export function ProgressSheet({
           value={amount}
           onChange={(e) => handleAmountChange(e.target.value)}
           placeholder={t('progressSheet.amountPlaceholder', {
-            unit: item.unit,
+            unit: unitLabel,
           })}
           className={inputClassName}
           autoFocus

@@ -4,6 +4,7 @@ import { cva } from 'class-variance-authority';
 import toast from 'react-hot-toast';
 import { Category, StudyItem, Unit } from '../types/study';
 import { CATEGORY_UNITS } from '../constants/categoryUnits';
+import { UNIT_LABEL_KEYS } from '../constants/unitLabels';
 import { categoryMeta } from '../components/icons/categoryMeta';
 import { BackButton } from '../components/ui/BackButton';
 import { Card } from '../components/ui/Card';
@@ -146,10 +147,10 @@ export function CreateEditView({
 
   const units: Unit[] = CATEGORY_UNITS[category];
   const unitLabels: Record<Unit, string> = {
-    pages: t('createEdit.unitPages'),
-    '%': t('createEdit.unitPercent'),
-    hours: t('createEdit.unitHours'),
-    modules: t('createEdit.unitModules'),
+    pages: t(UNIT_LABEL_KEYS.pages),
+    '%': t(UNIT_LABEL_KEYS['%']),
+    hours: t(UNIT_LABEL_KEYS.hours),
+    modules: t(UNIT_LABEL_KEYS.modules),
   };
 
   return (

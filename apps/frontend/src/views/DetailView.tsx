@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { cva } from 'class-variance-authority';
 import { StudyItem } from '../types/study';
+import { UNIT_LABEL_KEYS } from '../constants/unitLabels';
 import { calcETA, formatDate, pct } from '../utils/eta';
 import { categoryMeta } from '../components/icons/categoryMeta';
 import { BackButton } from '../components/ui/BackButton';
@@ -59,6 +60,8 @@ export function DetailView({
     progresso: l.amount,
   }));
 
+  const unitLabel = t(UNIT_LABEL_KEYS[item.unit]);
+
   return (
     <div className="min-h-screen bg-base pb-8">
       {/* Header */}
@@ -77,8 +80,8 @@ export function DetailView({
         </div>
         <div className="font-mono text-[13px] text-text-secondary">
           {item.totalScope != null
-            ? `${item.currentProgress} / ${item.totalScope} ${item.unit}`
-            : `${item.currentProgress} ${item.unit}`}
+            ? `${item.currentProgress} / ${item.totalScope} ${unitLabel}`
+            : `${item.currentProgress} ${unitLabel}`}
         </div>
       </div>
 
@@ -95,11 +98,11 @@ export function DetailView({
                   ? t('detail.progressPanelSub', {
                       current: item.currentProgress,
                       total: item.totalScope,
-                      unit: item.unit,
+                      unit: unitLabel,
                     })
                   : t('detail.progressPanelSubNoScope', {
                       current: item.currentProgress,
-                      unit: item.unit,
+                      unit: unitLabel,
                     })}
               </div>
             </div>
@@ -245,7 +248,7 @@ export function DetailView({
                   </div>
                   <div className="text-right">
                     <div className="font-mono text-[13px] font-semibold text-accent">
-                      +{l.amount} {item.unit}
+                      +{l.amount} {unitLabel}
                     </div>
                     <div className="text-[11px] text-text-secondary">
                       {l.minutes} min

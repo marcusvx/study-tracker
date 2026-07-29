@@ -64,10 +64,6 @@
     "titlePlaceholder": "E.g. Designing Data-Intensive Applications",
     "fieldCategory": "Category",
     "fieldUnit": "Unit",
-    "unitPages": "Pages",
-    "unitPercent": "Percent",
-    "unitHours": "Hours",
-    "unitModules": "Modules",
     "fieldTotalScope": "Total scope",
     "totalScopePlaceholder": "E.g. 500",
     "fieldCurrentProgress": "Current progress",
@@ -149,5 +145,11 @@
     "book": "Book",
     "course": "Course",
     "practice": "Practice"
+  },
+  "units": {
+    "pages": "Pages",
+    "percent": "Percent",
+    "hours": "Hours",
+    "modules": "Modules"
   }
 }
