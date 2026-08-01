@@ -65,7 +65,7 @@ export class InitSchema1760000000001 implements MigrationInterface {
           {
             name: 'totalScope',
             type: 'float',
-            isNullable: false,
+            isNullable: true,
           },
           {
             name: 'currentProgress',
@@ -86,11 +86,6 @@ export class InitSchema1760000000001 implements MigrationInterface {
             name: 'sessionMinutes',
             type: 'int',
             default: 30,
-          },
-          {
-            name: 'reminderTime',
-            type: 'varchar',
-            isNullable: true,
           },
           {
             name: 'notificationsOn',
@@ -297,9 +292,52 @@ export class InitSchema1760000000001 implements MigrationInterface {
         onDelete: 'CASCADE',
       }),
     );
+
+    await queryRunner.createTable(
+      new Table({
+        name: 'user_settings',
+        columns: [
+          {
+            name: 'userId',
+            type: 'uuid',
+            isPrimary: true,
+          },
+          {
+            name: 'reminderTime',
+            type: 'varchar',
+            default: "'19:00'",
+          },
+          {
+            name: 'createdAt',
+            type: 'timestamp',
+            isNullable: false,
+            default: 'now()',
+          },
+          {
+            name: 'updatedAt',
+            type: 'timestamp',
+            isNullable: false,
+            default: 'now()',
+          },
+        ],
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'user_settings',
+      new TableForeignKey({
+        name: 'FK_user_settings_userId_auth_users',
+        columnNames: ['userId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'users',
+        referencedSchema: 'auth',
+        onDelete: 'CASCADE',
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable('user_settings', true);
     await queryRunner.dropTable('reminder_sends', true);
     await queryRunner.dropTable('device_tokens', true);
     await queryRunner.dropTable('progress_logs', true);

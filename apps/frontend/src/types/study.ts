@@ -19,10 +19,13 @@ export interface StudyItem {
   deadline?: string;
   cadenceDays: number;
   sessionMinutes: number;
-  reminderTime?: string;
   notificationsOn: boolean;
   status: Status;
   log: LogEntry[];
+}
+
+export interface UserSettings {
+  reminderTime: string;
 }
 
 export type View = 'dashboard' | 'detail' | 'create' | 'settings';

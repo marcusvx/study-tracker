@@ -82,7 +82,6 @@ export function CreateEditView({
   const [sessionMinutes, setSessionMinutes] = useState(
     String(initial?.sessionMinutes ?? '30'),
   );
-  const [reminderTime, setReminderTime] = useState(initial?.reminderTime ?? '');
   const [notificationsOn, setNotificationsOn] = useState(
     initial?.notificationsOn ?? true,
   );
@@ -125,7 +124,6 @@ export function CreateEditView({
         deadline: deadline || undefined,
         cadenceDays,
         sessionMinutes: Number.parseInt(sessionMinutes) || 30,
-        reminderTime: reminderTime || undefined,
         notificationsOn,
         status: initial?.status ?? 'active',
       });
@@ -354,16 +352,6 @@ export function CreateEditView({
             }
           />
           <FieldError message={errors.sessionMinutes} />
-
-          <label className={labelClassName}>
-            {t('createEdit.fieldReminderTime')}
-          </label>
-          <input
-            type="time"
-            value={reminderTime}
-            onChange={(e) => setReminderTime(e.target.value)}
-            className={`${inputClassName} mb-4`}
-          />
 
           <div className="mt-2 flex items-center justify-between">
             <span className="text-sm font-medium text-text-primary">

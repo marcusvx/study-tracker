@@ -7,6 +7,7 @@ import { StudyItemsModule } from './study-items/study-items.module';
 import { ProgressLogsModule } from './progress-logs/progress-logs.module';
 import { DeviceTokensModule } from './device-tokens/device-tokens.module';
 import { RemindersModule } from './reminders/reminders.module';
+import { UserSettingsModule } from './user-settings/user-settings.module';
 
 @Module({
   controllers: [HealthController],
@@ -17,6 +18,7 @@ import { RemindersModule } from './reminders/reminders.module';
     ProgressLogsModule,
     DeviceTokensModule,
     RemindersModule,
+    UserSettingsModule,
   ],
 })
 export class AppModule {}

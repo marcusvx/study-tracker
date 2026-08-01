@@ -9,14 +9,12 @@ import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { supabase } from '../lib/supabaseClient';
 import { useTheme } from '../contexts/useTheme';
 import type { ThemeMode } from '../contexts/ThemeContext';
-import {
-  setAppLanguage,
-  type AppLanguage,
-  SUPPORTED_LANGUAGES,
-} from '../i18n';
+import { setAppLanguage, type AppLanguage, SUPPORTED_LANGUAGES } from '../i18n';
 
 interface SettingsViewProps {
   items: StudyItem[];
+  reminderTime: string;
+  onUpdateReminderTime: (reminderTime: string) => void;
   onBack: () => void;
 }
 
@@ -26,16 +24,22 @@ const sectionLabelClassName =
 const selectClassName =
   'w-full cursor-pointer rounded-md border border-border bg-input px-3.5 py-3 text-[15px] text-text-primary outline-none';
 
+const inputClassName =
+  'w-full rounded-md border border-border bg-input px-3.5 py-3 text-[15px] text-text-primary outline-none';
+
 function isAppLanguage(value: string): value is AppLanguage {
   return (SUPPORTED_LANGUAGES as readonly string[]).includes(value);
 }
 
-export function SettingsView({ items, onBack }: Readonly<SettingsViewProps>) {
+export function SettingsView({
+  items,
+  reminderTime,
+  onUpdateReminderTime,
+  onBack,
+}: Readonly<SettingsViewProps>) {
   const { t, i18n } = useTranslation();
   const { mode, setThemeMode } = useTheme();
-  const withReminders = items.filter(
-    (i) => i.notificationsOn && i.reminderTime,
-  );
+  const withReminders = items.filter((i) => i.notificationsOn);
   const currentLanguage: AppLanguage = isAppLanguage(i18n.language)
     ? i18n.language
     : 'pt';
@@ -107,6 +111,19 @@ export function SettingsView({ items, onBack }: Readonly<SettingsViewProps>) {
         {/* Notifications */}
         <Card>
           <div className={`${sectionLabelClassName} mb-3`}>
+            {t('settings.reminderTimeLabel')}
+          </div>
+          <input
+            type="time"
+            value={reminderTime}
+            onChange={(e) => onUpdateReminderTime(e.target.value)}
+            className={`${inputClassName} mb-1.5`}
+          />
+          <div className="mb-4 text-xs text-text-secondary">
+            {t('settings.reminderTimeDesc')}
+          </div>
+
+          <div className={`${sectionLabelClassName} mb-3`}>
             {t('settings.activeReminders')}
           </div>
           {withReminders.length === 0 && (
@@ -117,12 +134,9 @@ export function SettingsView({ items, onBack }: Readonly<SettingsViewProps>) {
           {withReminders.map((i) => (
             <div
               key={i.id}
-              className="flex items-center justify-between border-b border-border py-2.5"
+              className="border-b border-border py-2.5 text-sm font-medium"
             >
-              <div className="text-sm font-medium">{i.title}</div>
-              <div className="font-mono text-[13px] text-accent">
-                {i.reminderTime}
-              </div>
+              {i.title}
             </div>
           ))}
         </Card>

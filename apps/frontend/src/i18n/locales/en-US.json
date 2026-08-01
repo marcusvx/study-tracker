@@ -47,7 +47,6 @@
     "cadenceEvery": "Every {{days}}d",
     "sessionTime": "Time per session",
     "sessionTimeValue": "{{minutes}} min",
-    "reminder": "Reminder",
     "notifications": "Notifications",
     "notificationsOn": "On",
     "notificationsOff": "Off",
@@ -73,7 +72,6 @@
     "every": "Every",
     "days": "days",
     "fieldSessionMinutes": "Time per session (minutes)",
-    "fieldReminderTime": "Reminder time",
     "notifications": "Notifications",
     "submitCreate": "Create item",
     "submitSave": "Save changes",
@@ -96,6 +94,8 @@
     "languagePt": "Português",
     "languageEnUS": "English (US)",
     "activeReminders": "ACTIVE REMINDERS",
+    "reminderTimeLabel": "Reminder time",
+    "reminderTimeDesc": "All active reminders fire at this time.",
     "noReminders": "No reminders configured.",
     "account": "ACCOUNT",
     "accountDesc": "Your study habits are synced to the cloud.",
@@ -139,7 +139,9 @@
     "resumeSuccess": "Item resumed.",
     "pauseError": "Error updating status on the server.",
     "archiveSuccess": "Item archived.",
-    "archiveError": "Error archiving item on the server."
+    "archiveError": "Error archiving item on the server.",
+    "reminderTimeSuccess": "Reminder time updated.",
+    "reminderTimeError": "Error updating reminder time on the server."
   },
   "category": {
     "book": "Book",
@@ -151,5 +153,10 @@
     "percent": "Percent",
     "hours": "Hours",
     "modules": "Modules"
+  },
+  "reminders": {
+    "pushTitle": "Time to study",
+    "pushBodyOne": "{{title}}",
+    "pushBodyMany": "{{count}} items due today"
   }
 }

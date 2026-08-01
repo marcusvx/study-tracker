@@ -45,9 +45,6 @@ export class StudyItemEntity {
   @Column({ type: 'int', default: 30 })
   sessionMinutes!: number;
 
-  @Column({ nullable: true })
-  reminderTime?: string;
-
   @Column({ default: true })
   notificationsOn!: boolean;
 

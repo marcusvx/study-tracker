@@ -5,6 +5,7 @@ import { StudyItemEntity } from '../study-items/study-item.entity';
 import { ProgressLogEntity } from '../progress-logs/progress-log.entity';
 import { DeviceTokenEntity } from '../device-tokens/device-token.entity';
 import { ReminderSendEntity } from '../reminders/reminder-send.entity';
+import { UserSettingEntity } from '../user-settings/user-setting.entity';
 
 // Local: docker-compose Postgres; production: Supabase connection string.
 // Only the latter needs SSL, gated on NODE_ENV rather than on the URL itself.
@@ -20,6 +21,7 @@ const baseOptions: DataSourceOptions = {
     ProgressLogEntity,
     DeviceTokenEntity,
     ReminderSendEntity,
+    UserSettingEntity,
   ],
   synchronize: false,
 };

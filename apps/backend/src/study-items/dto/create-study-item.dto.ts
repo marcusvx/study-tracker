@@ -52,10 +52,6 @@ export class CreateStudyItemDto {
   @IsOptional()
   sessionMinutes?: number;
 
-  @IsString()
-  @IsOptional()
-  reminderTime?: string;
-
   @IsBoolean()
   @IsOptional()
   notificationsOn?: boolean;

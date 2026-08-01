@@ -19,12 +19,16 @@ import {
   deleteStudyItem,
   addProgressLog,
   togglePauseStudyItem,
+  fetchUserSettings,
+  updateUserSettings,
 } from './services/api';
+import { syncStudyReminders } from './services/localNotifications';
 
 export function App() {
   const { t } = useTranslation();
   const [session, setSession] = useState<Session | null | undefined>(undefined);
   const [items, setItems] = useState<StudyItem[]>([]);
+  const [reminderTime, setReminderTime] = useState<string>('19:00');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,8 +54,12 @@ export function App() {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchStudyItems();
+      const [data, settings] = await Promise.all([
+        fetchStudyItems(),
+        fetchUserSettings(),
+      ]);
       setItems(data);
+      setReminderTime(settings.reminderTime);
     } catch (err) {
       console.error('Error fetching study items:', err);
       setError(
@@ -67,6 +75,10 @@ export function App() {
   useEffect(() => {
     if (session) void loadData();
   }, [session]);
+
+  useEffect(() => {
+    void syncStudyReminders(items, reminderTime);
+  }, [items, reminderTime]);
 
   const activeItem = activeId
     ? items.find((i) => i.id === activeId)
@@ -165,6 +177,19 @@ export function App() {
     } catch (err: any) {
       console.error('Error deleting study item:', err);
       toast.error(t('toasts.archiveError'));
+    }
+  };
+
+  const handleUpdateReminderTime = async (newReminderTime: string) => {
+    const previous = reminderTime;
+    setReminderTime(newReminderTime);
+    try {
+      await updateUserSettings({ reminderTime: newReminderTime });
+      toast.success(t('toasts.reminderTimeSuccess'));
+    } catch (err) {
+      console.error('Error updating reminder time:', err);
+      setReminderTime(previous);
+      toast.error(t('toasts.reminderTimeError'));
     }
   };
 
@@ -276,7 +301,12 @@ export function App() {
         )}
 
         {view === 'settings' && (
-          <SettingsView items={items} onBack={() => setView('dashboard')} />
+          <SettingsView
+            items={items}
+            reminderTime={reminderTime}
+            onUpdateReminderTime={(time) => void handleUpdateReminderTime(time)}
+            onBack={() => setView('dashboard')}
+          />
         )}
 
         {sheetItem && (

@@ -204,7 +204,6 @@ export function DetailView({
                   minutes: item.sessionMinutes,
                 }),
               },
-              { label: t('detail.reminder'), value: item.reminderTime || '–' },
               {
                 label: t('detail.notifications'),
                 value: item.notificationsOn

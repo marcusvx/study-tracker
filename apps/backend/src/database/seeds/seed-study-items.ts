@@ -14,7 +14,6 @@ const initialItems = [
     deadline: '2026-08-30',
     cadenceDays: 1,
     sessionMinutes: 30,
-    reminderTime: '21:00',
     notificationsOn: true,
     status: 'active' as const,
     log: [
@@ -36,7 +35,6 @@ const initialItems = [
     deadline: '2026-09-15',
     cadenceDays: 1,
     sessionMinutes: 60,
-    reminderTime: '07:00',
     notificationsOn: true,
     status: 'active' as const,
     log: [
@@ -56,7 +54,6 @@ const initialItems = [
     deadline: '2026-08-10',
     cadenceDays: 2,
     sessionMinutes: 45,
-    reminderTime: '19:30',
     notificationsOn: false,
     status: 'active' as const,
     log: [

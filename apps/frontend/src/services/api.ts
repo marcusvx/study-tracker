@@ -1,5 +1,5 @@
 import { Capacitor } from '@capacitor/core';
-import { StudyItem } from '../types/study';
+import { StudyItem, UserSettings } from '../types/study';
 import { supabase } from '../lib/supabaseClient';
 
 const configuredBaseUrl =
@@ -106,4 +106,28 @@ export async function togglePauseStudyItem(id: string): Promise<StudyItem> {
     );
   }
   return res.json() as Promise<StudyItem>;
+}
+
+export async function fetchUserSettings(): Promise<UserSettings> {
+  const res = await fetch(`${API_BASE_URL}/user-settings`, {
+    headers: await authHeaders(),
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch user settings (${res.status})`);
+  }
+  return res.json() as Promise<UserSettings>;
+}
+
+export async function updateUserSettings(
+  data: UserSettings,
+): Promise<UserSettings> {
+  const res = await fetch(`${API_BASE_URL}/user-settings`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to update user settings (${res.status})`);
+  }
+  return res.json() as Promise<UserSettings>;
 }

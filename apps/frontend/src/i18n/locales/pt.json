@@ -47,7 +47,6 @@
     "cadenceEvery": "A cada {{days}}d",
     "sessionTime": "Tempo por sessão",
     "sessionTimeValue": "{{minutes}} min",
-    "reminder": "Lembrete",
     "notifications": "Notificações",
     "notificationsOn": "Ativas",
     "notificationsOff": "Desativadas",
@@ -73,7 +72,6 @@
     "every": "A cada",
     "days": "dias",
     "fieldSessionMinutes": "Tempo por sessão (minutos)",
-    "fieldReminderTime": "Horário do lembrete",
     "notifications": "Notificações",
     "submitCreate": "Criar item",
     "submitSave": "Salvar alterações",
@@ -96,6 +94,8 @@
     "languagePt": "Português",
     "languageEnUS": "English (US)",
     "activeReminders": "LEMBRETES ATIVOS",
+    "reminderTimeLabel": "Horário do lembrete",
+    "reminderTimeDesc": "Todos os lembretes ativos disparam neste horário.",
     "noReminders": "Nenhum lembrete configurado.",
     "account": "CONTA",
     "accountDesc": "Seus hábitos de estudo estão sincronizados na nuvem.",
@@ -139,7 +139,9 @@
     "resumeSuccess": "Item retomado.",
     "pauseError": "Erro ao alterar status no servidor.",
     "archiveSuccess": "Item arquivado.",
-    "archiveError": "Erro ao arquivar item no servidor."
+    "archiveError": "Erro ao arquivar item no servidor.",
+    "reminderTimeSuccess": "Horário do lembrete atualizado.",
+    "reminderTimeError": "Erro ao atualizar horário do lembrete no servidor."
   },
   "category": {
     "book": "Livro",
@@ -151,5 +153,10 @@
     "percent": "Percentual",
     "hours": "Horas",
     "modules": "Módulos"
+  },
+  "reminders": {
+    "pushTitle": "Hora de estudar",
+    "pushBodyOne": "{{title}}",
+    "pushBodyMany": "{{count}} itens para hoje"
   }
 }
